@@ -36,7 +36,9 @@ class HomeScreenWidget extends StatelessWidget {
 }
 
 class _PersonDataWidget extends StatelessWidget {
-  const _PersonDataWidget({Key? key}) : super(key: key);
+  _PersonDataWidget({Key? key}) : super(key: key);
+
+  List notifications = [];
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +78,13 @@ class _PersonDataWidget extends StatelessWidget {
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: () {
-                    print('lol');
+                    showModalBottomSheet(
+                        backgroundColor: Colors.transparent,
+                        context: context,
+                        builder: (context) {
+                          return _NotificationsBoxWidget(
+                              notifications: notifications);
+                        });
                   },
                   splashColor: Colors.indigo.withOpacity(.1),
                   hoverColor: Colors.indigo.withOpacity(.1),
@@ -88,6 +96,19 @@ class _PersonDataWidget extends StatelessWidget {
                   ),
                 ),
               ),
+              Visibility(
+                visible: notifications.isNotEmpty,
+                child: Positioned(
+                    top: 7,
+                    right: 7,
+                    child: Container(
+                      height: 8,
+                      width: 8,
+                      decoration: BoxDecoration(
+                          color: Colors.pink.withOpacity(.8),
+                          borderRadius: BorderRadius.circular(8)),
+                    )),
+              )
             ],
           ),
           CircleAvatar(
@@ -221,7 +242,7 @@ class _ActionButtons extends StatelessWidget {
                       },
                       splashColor: Colors.white.withOpacity(.1),
                       hoverColor: Colors.white.withOpacity(.1),
-                      borderRadius: BorderRadius.circular(30),
+                      borderRadius: BorderRadius.circular(20),
                       child: Container(
                         alignment: Alignment.center,
                         height: 60,
@@ -263,7 +284,7 @@ class _ActionButtons extends StatelessWidget {
                       },
                       splashColor: Colors.white.withOpacity(.1),
                       hoverColor: Colors.white.withOpacity(.1),
-                      borderRadius: BorderRadius.circular(30),
+                      borderRadius: BorderRadius.circular(20),
                       child: Container(
                         alignment: Alignment.center,
                         height: 60,
@@ -309,7 +330,7 @@ class _ActionButtons extends StatelessWidget {
                       },
                       splashColor: Colors.white.withOpacity(.1),
                       hoverColor: Colors.white.withOpacity(.1),
-                      borderRadius: BorderRadius.circular(30),
+                      borderRadius: BorderRadius.circular(20),
                       child: Container(
                         alignment: Alignment.center,
                         height: 60,
@@ -351,7 +372,7 @@ class _ActionButtons extends StatelessWidget {
                       },
                       splashColor: Colors.white.withOpacity(.1),
                       hoverColor: Colors.white.withOpacity(.1),
-                      borderRadius: BorderRadius.circular(30),
+                      borderRadius: BorderRadius.circular(20),
                       child: Container(
                         alignment: Alignment.center,
                         height: 60,
@@ -405,6 +426,91 @@ class _PostWidget extends StatelessWidget {
         height: 150,
         width: 150,
         child: Placeholder(),
+      ),
+    );
+  }
+}
+
+class _NotificationsBoxWidget extends StatelessWidget {
+  _NotificationsBoxWidget({Key? key, required this.notifications})
+      : super(key: key);
+
+  List notifications;
+
+  @override
+  Widget build(BuildContext context) {
+    print(notifications.isEmpty);
+    return Container(
+      height: 400,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+          color: Colors.white),
+      child: notifications.isEmpty
+          ? Center(
+              child: Text('You have no notifications 😢',
+                  style: TextStyle(color: Colors.black54, fontSize: 18)))
+          : SingleChildScrollView(
+              child: Column(
+                children: notifications
+                    .map((e) => _NotificationWidget(text: e['text']))
+                    .toList(),
+              ),
+            ),
+    );
+  }
+}
+
+class _NotificationWidget extends StatefulWidget {
+  _NotificationWidget({Key? key, required this.text}) : super(key: key);
+
+  String text;
+
+  @override
+  State<_NotificationWidget> createState() => _NotificationWidgetState();
+}
+
+class _NotificationWidgetState extends State<_NotificationWidget> {
+  bool is_visible = true;
+
+  @override
+  Widget build(BuildContext context) {
+    return Visibility(
+      visible: is_visible,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 8),
+        child: Column(
+          children: [
+            Container(
+              height: 60,
+              child: Row(
+                children: [
+                  Icon(Icons.message_outlined, color: Colors.black54),
+                  SizedBox(width: 16),
+                  Expanded(
+                      child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(widget.text,
+                            maxLines: 3,
+                            style: TextStyle(
+                                color: Colors.black54, fontSize: 16))),
+                  )),
+                  SizedBox(width: 16),
+                  InkWell(
+                      onTap: () {
+                        print(widget.text);
+                        is_visible = false;
+                        setState(() {});
+                      },
+                      child: Icon(Icons.cancel, color: Colors.red[200]))
+                ],
+              ),
+            ),
+            Container(height: 1, color: Colors.grey[200])
+          ],
+        ),
       ),
     );
   }
