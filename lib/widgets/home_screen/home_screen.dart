@@ -38,7 +38,12 @@ class HomeScreenWidget extends StatelessWidget {
 class _PersonDataWidget extends StatelessWidget {
   _PersonDataWidget({Key? key}) : super(key: key);
 
-  List notifications = [];
+  List notifications = [
+    {'text': 'lol'},
+    {'text': 'lol'},
+    {'text': 'lol'},
+    {'text': 'lol'}
+  ];
 
   @override
   Widget build(BuildContext context) {
