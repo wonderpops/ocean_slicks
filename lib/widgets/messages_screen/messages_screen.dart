@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:ocean_slicks/widgets/messages_screen/chat_screen.dart';
 
-class MessagesScreenWidget extends StatelessWidget {
+class MessagesScreenWidget extends StatefulWidget {
   MessagesScreenWidget({Key? key}) : super(key: key);
 
+  @override
+  State<MessagesScreenWidget> createState() => _MessagesScreenWidgetState();
+}
+
+class _MessagesScreenWidgetState extends State<MessagesScreenWidget> {
   List chats = [
     {
       'title': 'Mr. Polygon',
@@ -31,24 +37,53 @@ class MessagesScreenWidget extends StatelessWidget {
     }
   ];
 
+  void onChatPreviewClick(int chat_id) {
+    chat_is_opened = true;
+    current_chat_id = chat_id;
+    setState(() {});
+  }
+
+  void onBackClick() {
+    chat_is_opened = false;
+    setState(() {});
+  }
+
+  bool chat_is_opened = false;
+  int current_chat_id = 0;
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 32),
-      child: Container(
-        child: SingleChildScrollView(
-          child: Column(
-            children: chats
-                .map((e) => _ChatPreviewWidget(
-                      title: e['title'],
-                      subtitle: e['subtitle'],
-                      time: e['time'],
-                      chat_id: e['chat_id'],
-                    ))
-                .toList(),
+    return Column(
+      children: [
+        Visibility(
+          visible: !chat_is_opened,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 32),
+            child: Container(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: chats
+                      .map((e) => _ChatPreviewWidget(
+                            title: e['title'],
+                            subtitle: e['subtitle'],
+                            time: e['time'],
+                            chat_id: e['chat_id'],
+                            onChatPreviewClick: onChatPreviewClick,
+                          ))
+                      .toList(),
+                ),
+              ),
+            ),
           ),
         ),
-      ),
+        Visibility(
+          visible: chat_is_opened,
+          child: ChatScreenWidget(
+            onBackClick: onBackClick,
+            chat_id: current_chat_id,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -59,12 +94,14 @@ class _ChatPreviewWidget extends StatelessWidget {
       required this.title,
       required this.subtitle,
       required this.time,
-      required this.chat_id})
+      required this.chat_id,
+      required this.onChatPreviewClick})
       : super(key: key);
   String title;
   String subtitle;
   DateTime time;
   int chat_id;
+  final void Function(int) onChatPreviewClick;
 
   @override
   Widget build(BuildContext context) {
@@ -127,9 +164,7 @@ class _ChatPreviewWidget extends StatelessWidget {
             Material(
               color: Colors.transparent,
               child: InkWell(
-                onTap: () {
-                  print(chat_id);
-                },
+                onTap: () => onChatPreviewClick(chat_id),
                 splashColor: Colors.orange.withOpacity(.1),
                 hoverColor: Colors.orange.withOpacity(.1),
                 focusColor: Colors.orange.withOpacity(.1),
