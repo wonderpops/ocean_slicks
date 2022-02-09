@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ocean_slicks/widgets/take_picture_screen/take_picture_screen.dart';
 
 class HomeScreenWidget extends StatelessWidget {
   const HomeScreenWidget({Key? key}) : super(key: key);
@@ -171,7 +172,12 @@ class _ActionButtons extends StatelessWidget {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        print('lol');
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext context) =>
+                                const TakePictureScreen(),
+                          ),
+                        );
                       },
                       splashColor: Colors.indigo.withOpacity(.1),
                       hoverColor: Colors.indigo.withOpacity(.1),
