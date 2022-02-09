@@ -68,88 +68,87 @@ class _ChatPreviewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        children: [
-          Stack(
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Container(
-                  height: 70,
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 60,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            CircleAvatar(
-                              radius: 32,
-                              backgroundColor: Colors.orange.withOpacity(.6),
+    return Column(
+      children: [
+        Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Container(
+                height: 70,
+                child: Column(
+                  children: [
+                    Container(
+                      height: 60,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CircleAvatar(
+                            radius: 32,
+                            backgroundColor: Colors.orange.withOpacity(.6),
+                          ),
+                          SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(title,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold)),
+                                Expanded(
+                                    child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(subtitle,
+                                          maxLines: 3,
+                                          style: TextStyle(
+                                              color: Colors.black87,
+                                              fontSize: 16))),
+                                )),
+                              ],
                             ),
-                            SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(title,
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                          color: Colors.black87,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold)),
-                                  Expanded(
-                                      child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: FittedBox(
-                                        fit: BoxFit.scaleDown,
-                                        child: Text(subtitle,
-                                            maxLines: 3,
-                                            style: TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 16))),
-                                  )),
-                                ],
-                              ),
-                            ),
-                            SizedBox(width: 16),
-                            Text(DateFormat('h:mm a').format(time),
-                                maxLines: 3,
-                                style: TextStyle(
-                                    color: Colors.black87, fontSize: 16)),
-                          ],
-                        ),
+                          ),
+                          SizedBox(width: 16),
+                          Text(DateFormat('h:mm a').format(time),
+                              maxLines: 3,
+                              style: TextStyle(
+                                  color: Colors.black87, fontSize: 16)),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-              Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {
-                    print(chat_id);
-                  },
-                  splashColor: Colors.orange.withOpacity(.1),
-                  hoverColor: Colors.orange.withOpacity(.1),
-                  focusColor: Colors.orange.withOpacity(.1),
-                  highlightColor: Colors.orange.withOpacity(.1),
-                  borderRadius: BorderRadius.circular(20),
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 78,
-                  ),
+            ),
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  print(chat_id);
+                },
+                splashColor: Colors.orange.withOpacity(.1),
+                hoverColor: Colors.orange.withOpacity(.1),
+                focusColor: Colors.orange.withOpacity(.1),
+                highlightColor: Colors.orange.withOpacity(.1),
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  alignment: Alignment.center,
+                  height: 78,
                 ),
               ),
-            ],
-          ),
-          Container(height: 1, color: Colors.white),
-          SizedBox(height: 8),
-        ],
-      ),
+            ),
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Container(height: 1, color: Colors.white),
+        ),
+        SizedBox(height: 8),
+      ],
     );
   }
 }

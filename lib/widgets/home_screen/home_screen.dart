@@ -8,23 +8,23 @@ class HomeScreenWidget extends StatelessWidget {
     return Container(
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 32),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _PersonDataWidget(),
-              SizedBox(height: 16),
+              SizedBox(height: 32),
               _ActionButtons(),
-              SizedBox(height: 16),
+              SizedBox(height: 32),
               Text('Discover',
                   style: TextStyle(
                       fontSize: 32,
                       color: Colors.indigo.withOpacity(.4),
                       fontWeight: FontWeight.bold)),
-              SizedBox(height: 16),
+              SizedBox(height: 32),
               _SearchWidget(),
-              SizedBox(height: 16),
+              SizedBox(height: 32),
               _DiscoverWidget()
             ],
           ),
@@ -115,6 +115,7 @@ class _PersonDataWidget extends StatelessWidget {
               )
             ],
           ),
+          SizedBox(width: 4),
           CircleAvatar(
             radius: 30,
             backgroundColor: Colors.indigo.withOpacity(.4),
@@ -122,6 +123,229 @@ class _PersonDataWidget extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class _ActionButtons extends StatelessWidget {
+  const _ActionButtons({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Flexible(
+              child: Stack(
+                children: [
+                  Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                        color: Colors.indigo.withOpacity(.1),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.indigo.withOpacity(.2),
+                            spreadRadius: 2,
+                            blurRadius: 6,
+                            offset: const Offset(0, 0),
+                          ),
+                        ],
+                        borderRadius: BorderRadius.circular(20)),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(width: 16),
+                          Icon(
+                            Icons.photo_camera_outlined,
+                            color: Colors.white,
+                          ),
+                          SizedBox(width: 16),
+                          Text(
+                            'Camera',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ]),
+                  ),
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () {
+                        print('lol');
+                      },
+                      splashColor: Colors.indigo.withOpacity(.1),
+                      hoverColor: Colors.indigo.withOpacity(.1),
+                      highlightColor: Colors.indigo.withOpacity(.1),
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 60,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 16),
+            Flexible(
+              child: Stack(
+                children: [
+                  Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                        color: Colors.pink.withOpacity(.1),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.pink.withOpacity(.2),
+                            spreadRadius: 2,
+                            blurRadius: 6,
+                            offset: const Offset(0, 0),
+                          ),
+                        ],
+                        borderRadius: BorderRadius.circular(20)),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(width: 16),
+                          Icon(
+                            Icons.photo_library_outlined,
+                            color: Colors.white,
+                          ),
+                          SizedBox(width: 16),
+                          Text(
+                            'Galery',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ]),
+                  ),
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () {
+                        print('lol');
+                      },
+                      splashColor: Colors.pink.withOpacity(.1),
+                      hoverColor: Colors.pink.withOpacity(.1),
+                      highlightColor: Colors.pink.withOpacity(.1),
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 60,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 16),
+        Row(
+          children: [
+            Flexible(
+              child: Stack(
+                children: [
+                  Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                        color: Colors.orange.withOpacity(.1),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.orange.withOpacity(.2),
+                            spreadRadius: 2,
+                            blurRadius: 6,
+                            offset: const Offset(0, 0),
+                          ),
+                        ],
+                        borderRadius: BorderRadius.circular(20)),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(width: 16),
+                          Icon(
+                            Icons.bookmarks_outlined,
+                            color: Colors.white,
+                          ),
+                          SizedBox(width: 16),
+                          Text(
+                            'Bookmarks',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ]),
+                  ),
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () {
+                        print('lol');
+                      },
+                      splashColor: Colors.orange.withOpacity(.1),
+                      hoverColor: Colors.orange.withOpacity(.1),
+                      highlightColor: Colors.orange.withOpacity(.1),
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 60,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(width: 16),
+            Flexible(
+              child: Stack(
+                children: [
+                  Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                        color: Colors.teal.withOpacity(.1),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.teal.withOpacity(.2),
+                            spreadRadius: 2,
+                            blurRadius: 6,
+                            offset: const Offset(0, 0),
+                          ),
+                        ],
+                        borderRadius: BorderRadius.circular(20)),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(width: 16),
+                          Icon(
+                            Icons.face_outlined,
+                            color: Colors.white,
+                          ),
+                          SizedBox(width: 16),
+                          Text(
+                            'My posts',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ]),
+                  ),
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () {
+                        print('lol');
+                      },
+                      splashColor: Colors.teal.withOpacity(.1),
+                      hoverColor: Colors.teal.withOpacity(.1),
+                      highlightColor: Colors.teal.withOpacity(.1),
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 60,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -153,10 +377,12 @@ class _SearchWidget extends StatelessWidget {
                   hintStyle: TextStyle(color: Colors.indigo.withOpacity(.1)),
                   enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30.0),
-                      borderSide: const BorderSide(color: Colors.white)),
+                      borderSide:
+                          BorderSide(color: Colors.white.withOpacity(.4))),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30.0),
-                    borderSide: const BorderSide(color: Colors.white),
+                    borderSide:
+                        BorderSide(color: Colors.indigo.withOpacity(.4)),
                   ),
                   labelText: 'Search...',
                   hintText: 'Search',
@@ -202,193 +428,6 @@ class _SearchWidget extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _ActionButtons extends StatelessWidget {
-  const _ActionButtons({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Flexible(
-              child: Stack(
-                children: [
-                  Container(
-                    height: 60,
-                    decoration: BoxDecoration(
-                        color: Colors.indigo.withOpacity(.3),
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          SizedBox(width: 16),
-                          Icon(
-                            Icons.photo_camera_outlined,
-                            color: Colors.white,
-                          ),
-                          SizedBox(width: 16),
-                          Text(
-                            'Take a photo',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ]),
-                  ),
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () {
-                        print('lol');
-                      },
-                      splashColor: Colors.white.withOpacity(.1),
-                      hoverColor: Colors.white.withOpacity(.1),
-                      borderRadius: BorderRadius.circular(20),
-                      child: Container(
-                        alignment: Alignment.center,
-                        height: 60,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: 16),
-            Flexible(
-              child: Stack(
-                children: [
-                  Container(
-                    height: 60,
-                    decoration: BoxDecoration(
-                        color: Colors.pink.withOpacity(.3),
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          SizedBox(width: 16),
-                          Icon(
-                            Icons.photo_library_outlined,
-                            color: Colors.white,
-                          ),
-                          SizedBox(width: 16),
-                          Text(
-                            'Galery',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ]),
-                  ),
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () {
-                        print('lol');
-                      },
-                      splashColor: Colors.white.withOpacity(.1),
-                      hoverColor: Colors.white.withOpacity(.1),
-                      borderRadius: BorderRadius.circular(20),
-                      child: Container(
-                        alignment: Alignment.center,
-                        height: 60,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: 16),
-        Row(
-          children: [
-            Flexible(
-              child: Stack(
-                children: [
-                  Container(
-                    height: 60,
-                    decoration: BoxDecoration(
-                        color: Colors.orange.withOpacity(.3),
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          SizedBox(width: 16),
-                          Icon(
-                            Icons.bookmarks_outlined,
-                            color: Colors.white,
-                          ),
-                          SizedBox(width: 16),
-                          Text(
-                            'Bookmarks',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ]),
-                  ),
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () {
-                        print('lol');
-                      },
-                      splashColor: Colors.white.withOpacity(.1),
-                      hoverColor: Colors.white.withOpacity(.1),
-                      borderRadius: BorderRadius.circular(20),
-                      child: Container(
-                        alignment: Alignment.center,
-                        height: 60,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(width: 16),
-            Flexible(
-              child: Stack(
-                children: [
-                  Container(
-                    height: 60,
-                    decoration: BoxDecoration(
-                        color: Colors.teal.withOpacity(.3),
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          SizedBox(width: 16),
-                          Icon(
-                            Icons.face_outlined,
-                            color: Colors.white,
-                          ),
-                          SizedBox(width: 16),
-                          Text(
-                            'My posts',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ]),
-                  ),
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () {
-                        print('lol');
-                      },
-                      splashColor: Colors.white.withOpacity(.1),
-                      hoverColor: Colors.white.withOpacity(.1),
-                      borderRadius: BorderRadius.circular(20),
-                      child: Container(
-                        alignment: Alignment.center,
-                        height: 60,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ],
     );
   }
 }
