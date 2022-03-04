@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ocean_slicks/constants/colors.dart';
 import 'package:ocean_slicks/widgets/home_screen/home_screen.dart';
 import 'package:ocean_slicks/widgets/map_screen/map_screen.dart';
 import 'package:ocean_slicks/widgets/messages_screen/messages_screen.dart';
@@ -15,64 +16,64 @@ class MainMenuWidget extends StatefulWidget {
 
 int _current_index = 0;
 
+Widget getBodyByIndex(index) {
+  switch (index) {
+    case 0:
+      return HomeScreenWidget();
+    case 1:
+      return MapWidget();
+    case 2:
+      return Container();
+    case 3:
+      return MessagesScreenWidget();
+    case 4:
+      return Container();
+    default:
+      return HomeScreenWidget();
+  }
+}
+
 class _MainMenuWidgetState extends State<MainMenuWidget> {
-  Color? bg_color = Colors.indigo[50];
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     return Scaffold(
-        backgroundColor: bg_color,
         bottomNavigationBar: Container(
-          color: Colors.white,
+          color: light_color,
           child: SalomonBottomBar(
             currentIndex: _current_index,
             onTap: (i) => setState(() {
               _current_index = i;
-              switch (_current_index) {
-                case 0:
-                  bg_color = Colors.indigo[50];
-                  break;
-                case 1:
-                  bg_color = Colors.pink[50];
-                  break;
-                case 2:
-                  bg_color = Colors.orange[50];
-                  break;
-                case 3:
-                  bg_color = Colors.teal[50];
-                  break;
-              }
             }),
             items: [
               SalomonBottomBarItem(
                 icon: const Icon(Icons.home_outlined),
                 title: const Text("Home"),
-                selectedColor: Colors.indigo,
+                selectedColor: accent_color.withOpacity(.4),
               ),
               SalomonBottomBarItem(
                 icon: const Icon(Icons.map_outlined),
                 title: const Text("Map"),
-                selectedColor: Colors.pink,
+                selectedColor: accent_color.withOpacity(.4),
+              ),
+              SalomonBottomBarItem(
+                icon: const Icon(Icons.add_circle_rounded),
+                title: const Text("Add post"),
+                selectedColor: accent_color.withOpacity(.4),
               ),
               SalomonBottomBarItem(
                 icon: const Icon(Icons.message_outlined),
                 title: const Text("Messages"),
-                selectedColor: Colors.orange,
+                selectedColor: accent_color.withOpacity(.4),
               ),
               SalomonBottomBarItem(
                 icon: const Icon(Icons.person_outline),
                 title: const Text("Profile"),
-                selectedColor: Colors.teal,
+                selectedColor: accent_color.withOpacity(.4),
               ),
             ],
           ),
         ),
-        body: _current_index == 0
-            ? HomeScreenWidget()
-            : _current_index == 1
-                ? MapWidget()
-                : _current_index == 2
-                    ? MessagesScreenWidget()
-                    : Container());
+        body: getBodyByIndex(_current_index));
   }
 }

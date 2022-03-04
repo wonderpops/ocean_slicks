@@ -6,6 +6,8 @@ import 'package:ocean_slicks/widgets/auth/sign_in_widget.dart';
 import 'package:ocean_slicks/widgets/auth/sign_up_widget.dart';
 import 'package:ocean_slicks/widgets/main_menu/main_menu.dart';
 
+import '../../constants/colors.dart';
+
 class LoginScreenWidget extends StatefulWidget {
   LoginScreenWidget({Key? key}) : super(key: key);
 
@@ -67,7 +69,15 @@ class _LoginScreenWidgetState extends State<LoginScreenWidget> {
 
     return Scaffold(
       body: Container(
-        color: Colors.indigo[50],
+        decoration: const BoxDecoration(
+            gradient: LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: [
+            light_color,
+            gray_color,
+          ],
+        )),
         child: Center(
           child: SingleChildScrollView(
             child: Column(

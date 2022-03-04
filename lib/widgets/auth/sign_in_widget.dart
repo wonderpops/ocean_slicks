@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ocean_slicks/constants/colors.dart';
 import 'package:ocean_slicks/controllers/auth_controller.dart';
 import 'package:ocean_slicks/widgets/main_menu/main_menu.dart';
 
@@ -32,7 +33,7 @@ class SignInWidget extends StatelessWidget {
           ),
           Container(
             decoration: BoxDecoration(
-                color: Colors.indigo.withOpacity(.1),
+                color: dark_color.withOpacity(.1),
                 borderRadius: BorderRadius.circular(30)),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -44,13 +45,13 @@ class SignInWidget extends StatelessWidget {
                     style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
-                        color: Colors.indigo.withOpacity(.8)),
+                        color: dark_color.withOpacity(.8)),
                   ),
                   Padding(
                     padding: EdgeInsets.only(left: 8),
                     child: Icon(
                       Icons.login_outlined,
-                      color: Colors.indigo.withOpacity(.8),
+                      color: dark_color.withOpacity(.8),
                       size: 30,
                     ),
                   ),
@@ -62,7 +63,7 @@ class SignInWidget extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
             child: Text(
               'Welcome back to ocean slicks!',
-              style: TextStyle(color: Colors.indigo),
+              style: TextStyle(color: dark_color),
             ),
           ),
           const SizedBox(
@@ -83,18 +84,18 @@ class SignInWidget extends StatelessWidget {
                   ],
                   keyboardType: TextInputType.text,
                   controller: username_ctrl,
-                  style: const TextStyle(color: Colors.indigo),
+                  style: const TextStyle(color: dark_color),
                   decoration: InputDecoration(
                     fillColor: Colors.white,
                     focusColor: Colors.white,
                     labelStyle: TextStyle(color: Colors.black.withOpacity(.6)),
-                    hintStyle: TextStyle(color: Colors.indigo.withOpacity(.4)),
+                    hintStyle: TextStyle(color: dark_color.withOpacity(.4)),
                     enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20.0),
-                        borderSide: const BorderSide(color: Colors.indigo)),
+                        borderSide: const BorderSide(color: dark_color)),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20.0),
-                      borderSide: const BorderSide(color: Colors.indigo),
+                      borderSide: const BorderSide(color: dark_color),
                     ),
                     labelText: 'username',
                     hintText: 'my_username',
@@ -114,22 +115,22 @@ class SignInWidget extends StatelessWidget {
                   keyboardType: TextInputType.text,
                   controller: password_ctrl,
                   obscureText: true,
-                  style: const TextStyle(color: Colors.indigo),
+                  style: const TextStyle(color: dark_color),
                   decoration: InputDecoration(
                     labelStyle: TextStyle(color: Colors.black.withOpacity(.6)),
-                    hintStyle: TextStyle(color: Colors.indigo.withOpacity(.4)),
+                    hintStyle: TextStyle(color: dark_color.withOpacity(.4)),
                     fillColor: Colors.white,
                     enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20.0),
-                        borderSide: const BorderSide(color: Colors.indigo)),
+                        borderSide: const BorderSide(color: dark_color)),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20.0),
-                      borderSide: const BorderSide(color: Colors.indigo),
+                      borderSide: const BorderSide(color: dark_color),
                     ),
-                    counterStyle: const TextStyle(color: Colors.indigo),
+                    counterStyle: const TextStyle(color: dark_color),
                     labelText: 'Password',
                     hintText: 'my_pass_1234',
-                    focusColor: Colors.indigo,
+                    focusColor: dark_color,
                   ),
                 ),
               )
@@ -178,10 +179,10 @@ class _AuthButtonWidget extends StatelessWidget {
           Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: Colors.indigo,
+                  color: dark_color,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.indigo.withOpacity(0.1),
+                      color: dark_color.withOpacity(0.1),
                       spreadRadius: 1,
                       blurRadius: 7,
                       offset: const Offset(0, 20),
@@ -215,9 +216,9 @@ class _AuthButtonWidget extends StatelessWidget {
                     );
                   }
                 },
-                focusColor: Colors.indigo.withOpacity(.1),
+                focusColor: dark_color.withOpacity(.1),
                 splashColor: Colors.white.withOpacity(.1),
-                hoverColor: Colors.indigo.withOpacity(.1),
+                hoverColor: dark_color.withOpacity(.1),
                 borderRadius: BorderRadius.circular(20),
                 child: Container(
                   alignment: Alignment.center,
@@ -269,7 +270,7 @@ class _SignUpButtonWidget extends StatelessWidget {
                   color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.indigo.withOpacity(0.1),
+                      color: dark_color.withOpacity(0.1),
                       spreadRadius: 1,
                       blurRadius: 7,
                       offset: const Offset(0, 20),
@@ -279,7 +280,7 @@ class _SignUpButtonWidget extends StatelessWidget {
               width: double.maxFinite,
               child: const Text(
                 'Sign Up',
-                style: TextStyle(color: Colors.indigo, fontSize: 20),
+                style: TextStyle(color: dark_color, fontSize: 20),
               )),
           Material(
             color: Colors.transparent,
@@ -289,9 +290,9 @@ class _SignUpButtonWidget extends StatelessWidget {
                 onTap: () {
                   onSignUpClick();
                 },
-                focusColor: Colors.indigo.withOpacity(.2),
-                splashColor: Colors.indigo.withOpacity(.4),
-                hoverColor: Colors.indigo.withOpacity(.1),
+                focusColor: dark_color.withOpacity(.2),
+                splashColor: dark_color.withOpacity(.4),
+                hoverColor: dark_color.withOpacity(.1),
                 borderRadius: BorderRadius.circular(20),
                 child: Container(
                   alignment: Alignment.center,

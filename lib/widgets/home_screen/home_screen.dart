@@ -1,33 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:ocean_slicks/widgets/take_picture_screen/take_picture_screen.dart';
 
+import '../../constants/colors.dart';
+
 class HomeScreenWidget extends StatelessWidget {
   const HomeScreenWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _PersonDataWidget(),
-              SizedBox(height: 32),
-              _ActionButtons(),
-              SizedBox(height: 32),
-              Text('Discover',
-                  style: TextStyle(
-                      fontSize: 32,
-                      color: Colors.indigo.withOpacity(.4),
-                      fontWeight: FontWeight.bold)),
-              SizedBox(height: 32),
-              _SearchWidget(),
-              SizedBox(height: 32),
-              _DiscoverWidget()
-            ],
+      color: gray_color,
+      child: ScrollConfiguration(
+        behavior: ScrollBehavior(),
+        child: GlowingOverscrollIndicator(
+          axisDirection: AxisDirection.down,
+          color: accent_color,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _PersonDataWidget(),
+                  // SizedBox(height: 32),
+                  // _AddPostWidget(),
+                  // _ActionButtons(),
+                  SizedBox(height: 32),
+                  Text('Discover',
+                      style: TextStyle(
+                          fontSize: 32,
+                          color: dark_color.withOpacity(.8),
+                          fontWeight: FontWeight.bold)),
+                  SizedBox(height: 32),
+                  _SearchWidget(),
+                  SizedBox(height: 32),
+                  _DiscoverWidget()
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -53,10 +64,10 @@ class _PersonDataWidget extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-                color: Colors.indigo.withOpacity(.1),
+                color: secondary_color.withOpacity(.8),
                 borderRadius: BorderRadius.circular(20)),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 8),
               child: Text(
                 'Hello, Wonderpop 🖐',
                 style: TextStyle(
@@ -76,7 +87,8 @@ class _PersonDataWidget extends StatelessWidget {
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                  child: Icon(Icons.notifications_none, color: Colors.indigo),
+                  child: Icon(Icons.notifications_none,
+                      color: dark_color.withOpacity(.8)),
                 ),
               ),
               Material(
@@ -91,8 +103,8 @@ class _PersonDataWidget extends StatelessWidget {
                               notifications: notifications);
                         });
                   },
-                  splashColor: Colors.indigo.withOpacity(.1),
-                  hoverColor: Colors.indigo.withOpacity(.1),
+                  splashColor: secondary_color.withOpacity(.1),
+                  hoverColor: secondary_color.withOpacity(.1),
                   borderRadius: BorderRadius.circular(30),
                   child: Container(
                     alignment: Alignment.center,
@@ -119,9 +131,62 @@ class _PersonDataWidget extends StatelessWidget {
           SizedBox(width: 4),
           CircleAvatar(
             radius: 30,
-            backgroundColor: Colors.indigo.withOpacity(.4),
+            backgroundColor: secondary_color,
             child: Icon(Icons.person_outline_outlined, color: Colors.white),
           )
+        ],
+      ),
+    );
+  }
+}
+
+class _AddPostWidget extends StatelessWidget {
+  const _AddPostWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Stack(
+        children: [
+          Container(
+            height: 60,
+            decoration: BoxDecoration(
+                color: accent_color.withOpacity(.1),
+                borderRadius: BorderRadius.circular(20)),
+            child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+              SizedBox(width: 16),
+              Icon(
+                Icons.face_outlined,
+                color: accent_color.withOpacity(.4),
+              ),
+              SizedBox(width: 16),
+              Text(
+                'My posts',
+                style: TextStyle(color: accent_color.withOpacity(.4)),
+              ),
+            ]),
+          ),
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (BuildContext context) =>
+                        const TakePictureScreen(),
+                  ),
+                );
+              },
+              splashColor: accent_color.withOpacity(.1),
+              hoverColor: accent_color.withOpacity(.1),
+              highlightColor: accent_color.withOpacity(.1),
+              borderRadius: BorderRadius.circular(20),
+              child: Container(
+                alignment: Alignment.center,
+                height: 60,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -143,15 +208,7 @@ class _ActionButtons extends StatelessWidget {
                   Container(
                     height: 60,
                     decoration: BoxDecoration(
-                        color: Colors.indigo.withOpacity(.1),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.indigo.withOpacity(.2),
-                            spreadRadius: 2,
-                            blurRadius: 6,
-                            offset: const Offset(0, 0),
-                          ),
-                        ],
+                        color: accent_color.withOpacity(.1),
                         borderRadius: BorderRadius.circular(20)),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -159,12 +216,13 @@ class _ActionButtons extends StatelessWidget {
                           SizedBox(width: 16),
                           Icon(
                             Icons.photo_camera_outlined,
-                            color: Colors.white,
+                            color: accent_color.withOpacity(.4),
                           ),
                           SizedBox(width: 16),
                           Text(
                             'Camera',
-                            style: TextStyle(color: Colors.white),
+                            style:
+                                TextStyle(color: accent_color.withOpacity(.4)),
                           ),
                         ]),
                   ),
@@ -179,9 +237,9 @@ class _ActionButtons extends StatelessWidget {
                           ),
                         );
                       },
-                      splashColor: Colors.indigo.withOpacity(.1),
-                      hoverColor: Colors.indigo.withOpacity(.1),
-                      highlightColor: Colors.indigo.withOpacity(.1),
+                      splashColor: accent_color.withOpacity(.1),
+                      hoverColor: accent_color.withOpacity(.1),
+                      highlightColor: accent_color.withOpacity(.1),
                       borderRadius: BorderRadius.circular(20),
                       child: Container(
                         alignment: Alignment.center,
@@ -199,15 +257,7 @@ class _ActionButtons extends StatelessWidget {
                   Container(
                     height: 60,
                     decoration: BoxDecoration(
-                        color: Colors.pink.withOpacity(.1),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.pink.withOpacity(.2),
-                            spreadRadius: 2,
-                            blurRadius: 6,
-                            offset: const Offset(0, 0),
-                          ),
-                        ],
+                        color: accent_color.withOpacity(.1),
                         borderRadius: BorderRadius.circular(20)),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -215,12 +265,13 @@ class _ActionButtons extends StatelessWidget {
                           SizedBox(width: 16),
                           Icon(
                             Icons.photo_library_outlined,
-                            color: Colors.white,
+                            color: accent_color.withOpacity(.4),
                           ),
                           SizedBox(width: 16),
                           Text(
-                            'Galery',
-                            style: TextStyle(color: Colors.white),
+                            'Gallery',
+                            style:
+                                TextStyle(color: accent_color.withOpacity(.4)),
                           ),
                         ]),
                   ),
@@ -228,11 +279,16 @@ class _ActionButtons extends StatelessWidget {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        print('lol');
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext context) =>
+                                const TakePictureScreen(),
+                          ),
+                        );
                       },
-                      splashColor: Colors.pink.withOpacity(.1),
-                      hoverColor: Colors.pink.withOpacity(.1),
-                      highlightColor: Colors.pink.withOpacity(.1),
+                      splashColor: accent_color.withOpacity(.1),
+                      hoverColor: accent_color.withOpacity(.1),
+                      highlightColor: accent_color.withOpacity(.1),
                       borderRadius: BorderRadius.circular(20),
                       child: Container(
                         alignment: Alignment.center,
@@ -254,15 +310,7 @@ class _ActionButtons extends StatelessWidget {
                   Container(
                     height: 60,
                     decoration: BoxDecoration(
-                        color: Colors.orange.withOpacity(.1),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.orange.withOpacity(.2),
-                            spreadRadius: 2,
-                            blurRadius: 6,
-                            offset: const Offset(0, 0),
-                          ),
-                        ],
+                        color: accent_color.withOpacity(.1),
                         borderRadius: BorderRadius.circular(20)),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -270,12 +318,13 @@ class _ActionButtons extends StatelessWidget {
                           SizedBox(width: 16),
                           Icon(
                             Icons.bookmarks_outlined,
-                            color: Colors.white,
+                            color: accent_color.withOpacity(.4),
                           ),
                           SizedBox(width: 16),
                           Text(
                             'Bookmarks',
-                            style: TextStyle(color: Colors.white),
+                            style:
+                                TextStyle(color: accent_color.withOpacity(.4)),
                           ),
                         ]),
                   ),
@@ -283,11 +332,16 @@ class _ActionButtons extends StatelessWidget {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        print('lol');
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext context) =>
+                                const TakePictureScreen(),
+                          ),
+                        );
                       },
-                      splashColor: Colors.orange.withOpacity(.1),
-                      hoverColor: Colors.orange.withOpacity(.1),
-                      highlightColor: Colors.orange.withOpacity(.1),
+                      splashColor: accent_color.withOpacity(.1),
+                      hoverColor: accent_color.withOpacity(.1),
+                      highlightColor: accent_color.withOpacity(.1),
                       borderRadius: BorderRadius.circular(20),
                       child: Container(
                         alignment: Alignment.center,
@@ -305,15 +359,7 @@ class _ActionButtons extends StatelessWidget {
                   Container(
                     height: 60,
                     decoration: BoxDecoration(
-                        color: Colors.teal.withOpacity(.1),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.teal.withOpacity(.2),
-                            spreadRadius: 2,
-                            blurRadius: 6,
-                            offset: const Offset(0, 0),
-                          ),
-                        ],
+                        color: accent_color.withOpacity(.1),
                         borderRadius: BorderRadius.circular(20)),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -321,12 +367,13 @@ class _ActionButtons extends StatelessWidget {
                           SizedBox(width: 16),
                           Icon(
                             Icons.face_outlined,
-                            color: Colors.white,
+                            color: accent_color.withOpacity(.4),
                           ),
                           SizedBox(width: 16),
                           Text(
                             'My posts',
-                            style: TextStyle(color: Colors.white),
+                            style:
+                                TextStyle(color: accent_color.withOpacity(.4)),
                           ),
                         ]),
                   ),
@@ -334,11 +381,16 @@ class _ActionButtons extends StatelessWidget {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        print('lol');
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext context) =>
+                                const TakePictureScreen(),
+                          ),
+                        );
                       },
-                      splashColor: Colors.teal.withOpacity(.1),
-                      hoverColor: Colors.teal.withOpacity(.1),
-                      highlightColor: Colors.teal.withOpacity(.1),
+                      splashColor: accent_color.withOpacity(.1),
+                      hoverColor: accent_color.withOpacity(.1),
+                      highlightColor: accent_color.withOpacity(.1),
                       borderRadius: BorderRadius.circular(20),
                       child: Container(
                         alignment: Alignment.center,
@@ -372,23 +424,22 @@ class _SearchWidget extends StatelessWidget {
                   color: Colors.white, borderRadius: BorderRadius.circular(30)),
               child: TextField(
                 keyboardType: TextInputType.text,
-                style: const TextStyle(color: Colors.indigo),
+                style: TextStyle(color: dark_color.withOpacity(.8)),
                 decoration: InputDecoration(
                   fillColor: Colors.white,
-                  suffixIcon: const Icon(
+                  suffixIcon: Icon(
                     Icons.search_rounded,
-                    color: Colors.indigo,
+                    color: dark_color.withOpacity(.8),
                   ),
-                  labelStyle: TextStyle(color: Colors.indigo.withOpacity(.4)),
-                  hintStyle: TextStyle(color: Colors.indigo.withOpacity(.1)),
+                  labelStyle: TextStyle(color: dark_color.withOpacity(.4)),
+                  hintStyle: TextStyle(color: dark_color.withOpacity(.1)),
                   enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30.0),
                       borderSide:
                           BorderSide(color: Colors.white.withOpacity(.4))),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30.0),
-                    borderSide:
-                        BorderSide(color: Colors.indigo.withOpacity(.4)),
+                    borderSide: BorderSide(color: dark_color.withOpacity(.4)),
                   ),
                   labelText: 'Search...',
                   hintText: 'Search',
@@ -410,7 +461,7 @@ class _SearchWidget extends StatelessWidget {
                   height: 55,
                   child: Icon(
                     Icons.filter_alt_outlined,
-                    color: Colors.indigo,
+                    color: dark_color.withOpacity(.8),
                   ),
                 ),
                 Material(
@@ -457,7 +508,7 @@ class _DiscoverWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-          child: Wrap(
+          child: Column(
         children: posts,
       )),
     );
@@ -472,9 +523,68 @@ class _PostWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-        height: 150,
-        width: 150,
-        child: Placeholder(),
+        decoration: BoxDecoration(
+            color: secondary_color, borderRadius: BorderRadius.circular(20)),
+        width: double.maxFinite,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    backgroundColor: dark_color,
+                    radius: 26,
+                    child: Icon(
+                      Icons.person,
+                      color: light_color,
+                    ),
+                  ),
+                  SizedBox(width: 18),
+                  Text(
+                    'username',
+                    style: TextStyle(
+                        color: dark_color.withOpacity(.8), fontSize: 18),
+                  ),
+                ],
+              ),
+            ),
+            Container(height: 300, child: Placeholder()),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Title',
+                      style: TextStyle(
+                          color: dark_color.withOpacity(.8), fontSize: 24),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: accent_color.withOpacity(.1)),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: Text(
+                          '18-02-1998',
+                          style: TextStyle(
+                              color: accent_color.withOpacity(.6),
+                              fontSize: 16),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

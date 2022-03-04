@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ocean_slicks/constants/colors.dart';
 import 'package:ocean_slicks/widgets/auth/login_screen.dart';
 import 'package:ocean_slicks/widgets/main_menu/main_menu.dart';
 
@@ -25,7 +26,7 @@ Future<void> main() async {
 
   runApp(
     MaterialApp(
-      theme: ThemeData.light(),
+      title: 'Ocean slicks',
       home: user_is_auth ? const MainMenuWidget() : LoginScreenWidget(),
     ),
   );
