@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ocean_slicks/constants/colors.dart';
+import 'package:ocean_slicks/widgets/add_post_screen/add_post_screen.dart';
 import 'package:ocean_slicks/widgets/home_screen/home_screen.dart';
 import 'package:ocean_slicks/widgets/map_screen/map_screen.dart';
 import 'package:ocean_slicks/widgets/messages_screen/messages_screen.dart';
@@ -23,7 +24,7 @@ Widget getBodyByIndex(index) {
     case 1:
       return MapWidget();
     case 2:
-      return Container();
+      return AddPostWidget();
     case 3:
       return MessagesScreenWidget();
     case 4:
@@ -36,7 +37,10 @@ Widget getBodyByIndex(index) {
 class _MainMenuWidgetState extends State<MainMenuWidget> {
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: accent_color,
+    ));
     return Scaffold(
         bottomNavigationBar: Container(
           color: light_color,

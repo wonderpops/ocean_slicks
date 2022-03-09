@@ -8,12 +8,15 @@ import 'package:ocean_slicks/widgets/auth/login_screen.dart';
 import 'package:ocean_slicks/widgets/main_menu/main_menu.dart';
 
 import 'controllers/CamerasController.dart';
+import 'controllers/add_post_controller.dart';
 import 'controllers/auth_controller.dart';
 
 Future<void> main() async {
   CamerasController cam_ctrl = CamerasController();
   AuthController auth_ctrl = AuthController();
   Get.put(auth_ctrl);
+  AddPostController ap_ctrl = AddPostController();
+  Get.put(ap_ctrl);
   // Ensure that plugin services are initialized so that `availableCameras()`
   // can be called before `runApp()`
   WidgetsFlutterBinding.ensureInitialized();

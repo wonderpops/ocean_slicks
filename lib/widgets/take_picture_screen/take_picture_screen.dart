@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ocean_slicks/controllers/CamerasController.dart';
 import 'package:path_provider/path_provider.dart';
+
+import '../../constants/colors.dart';
+import '../../controllers/add_post_controller.dart';
 // A screen that allows users to take a picture using a given camera.
 
 class TakePictureScreen extends StatefulWidget {
@@ -109,25 +112,19 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
                                       image.saveTo(filePath);
 
+                                      AddPostController ap_ctrl = Get.find();
+                                      ap_ctrl.photos.add(filePath);
+
                                       // If the picture was taken, display it on a new screen.
-                                      await Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              DisplayPictureScreen(
-                                            // Pass the automatically generated path to
-                                            // the DisplayPictureScreen widget.
-                                            imagePath: filePath,
-                                          ),
-                                        ),
-                                      );
+                                      Navigator.of(context).pop();
                                     } catch (e) {
                                       // If an error occurs, log the error to the console.
                                       print(e);
                                     }
                                   },
-                                  splashColor: Colors.indigo.withOpacity(.1),
-                                  hoverColor: Colors.indigo.withOpacity(.1),
-                                  highlightColor: Colors.indigo.withOpacity(.1),
+                                  splashColor: accent_color.withOpacity(.1),
+                                  hoverColor: accent_color.withOpacity(.1),
+                                  highlightColor: accent_color.withOpacity(.1),
                                   borderRadius: BorderRadius.circular(40),
                                   child: Container(
                                     alignment: Alignment.center,
@@ -170,9 +167,9 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                               print('alo');
                               Navigator.of(context).pop();
                             },
-                            splashColor: Colors.indigo.withOpacity(.1),
-                            hoverColor: Colors.indigo.withOpacity(.1),
-                            highlightColor: Colors.indigo.withOpacity(.1),
+                            splashColor: accent_color.withOpacity(.1),
+                            hoverColor: accent_color.withOpacity(.1),
+                            highlightColor: accent_color.withOpacity(.1),
                             borderRadius: BorderRadius.circular(20),
                             child: Container(
                               alignment: Alignment.center,
