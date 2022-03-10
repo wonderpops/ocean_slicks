@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_connect/connect.dart';
 import 'package:ocean_slicks/constants/colors.dart';
 import 'package:ocean_slicks/widgets/add_post_screen/add_post_screen.dart';
@@ -8,6 +9,8 @@ import 'package:ocean_slicks/widgets/messages_screen/messages_screen.dart';
 // import 'package:ocean_slicks/widgets/take_picture_screen/take_picture_screen.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:flutter/services.dart';
+
+import '../../controllers/add_post_controller.dart';
 
 class MainMenuWidget extends StatefulWidget {
   const MainMenuWidget({Key? key}) : super(key: key);
@@ -38,6 +41,43 @@ Widget getBodyByIndex(index) {
 class _MainMenuWidgetState extends State<MainMenuWidget> {
   @override
   Widget build(BuildContext context) {
+    AddPostController ap_ctrl = Get.find();
+    _dismissDialog() {
+      Navigator.pop(context);
+    }
+
+    void _showMaterialDialog(i) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Warning!'),
+              content: Text(
+                  'If you leave this screen, all data will be lost. \n\nContinue?'),
+              actions: <Widget>[
+                TextButton(
+                    onPressed: () {
+                      _dismissDialog();
+                    },
+                    child: Text('Back',
+                        style: TextStyle(color: accent_color.withOpacity(.8)))),
+                TextButton(
+                  onPressed: () {
+                    _dismissDialog();
+                    ap_ctrl.photos = [];
+                    _current_index = i;
+                    setState(() {});
+                  },
+                  child: Text(
+                    'Leave screen',
+                    style: TextStyle(color: Colors.red[200]),
+                  ),
+                )
+              ],
+            );
+          });
+    }
+
     return Scaffold(
         resizeToAvoidBottomInset: true,
         bottomNavigationBar: Container(
@@ -45,7 +85,15 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
           child: SalomonBottomBar(
             currentIndex: _current_index,
             onTap: (i) => setState(() {
-              _current_index = i;
+              if ((_current_index == 2) && (i != 2)) {
+                if (ap_ctrl.photos.isNotEmpty) {
+                  _showMaterialDialog(i);
+                } else {
+                  _current_index = i;
+                }
+              } else {
+                _current_index = i;
+              }
             }),
             items: [
               SalomonBottomBarItem(
