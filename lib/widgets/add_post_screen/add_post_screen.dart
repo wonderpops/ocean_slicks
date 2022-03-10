@@ -23,28 +23,36 @@ class _AddPostWidgetState extends State<AddPostWidget> {
 
   @override
   Widget build(BuildContext context) {
+    AddPostController ap_ctrl = Get.find();
     return Container(
       color: gray_color,
-      child: CustomScrollView(
-        primary: false,
-        slivers: <Widget>[
-          SliverList(
-              delegate: SliverChildListDelegate([
-            _PlacePreview(),
-            _PhotosWidget(),
-          ])),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            sliver: _PhotosGrid(),
+      child: ScrollConfiguration(
+        behavior: ScrollBehavior(),
+        child: GlowingOverscrollIndicator(
+          axisDirection: AxisDirection.down,
+          color: accent_color,
+          child: CustomScrollView(
+            slivers: <Widget>[
+              SliverList(
+                  delegate: SliverChildListDelegate([
+                _PlacePreview(),
+                _PhotosWidget(),
+              ])),
+              SliverVisibility(
+                  visible: ap_ctrl.photos.isNotEmpty,
+                  sliver: SliverPadding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      sliver: _PhotosGrid())),
+              SliverList(
+                  delegate: SliverChildListDelegate([
+                _AddPhotoButton(update_widget: update_data),
+                _MetadataWidget(),
+                _PostData(),
+                _AddPostButton()
+              ])),
+            ],
           ),
-          SliverList(
-              delegate: SliverChildListDelegate([
-            _AddPhotoButton(update_widget: update_data),
-            _MetadataWidget(),
-            _PostData(),
-            _AddPostButton()
-          ])),
-        ],
+        ),
       ),
     );
   }
@@ -107,32 +115,16 @@ class _PhotosWidget extends StatefulWidget {
 }
 
 class _PhotosWidgetState extends State<_PhotosWidget> {
-  void update_photos() {
-    print('photos_was_updated');
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: gray_color,
-      width: double.maxFinite,
       child: Padding(
-        padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Photos',
-                style: TextStyle(
-                    fontSize: 32,
-                    color: dark_color.withOpacity(.8),
-                    fontWeight: FontWeight.bold)),
-            // Visibility(visible: photos.isNotEmpty, child: SizedBox(height: 16)),
-            // _AddPhotoButton(
-            //   update_widget: update_photos,
-            // ),
-          ],
-        ),
+        padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
+        child: Text('Photos',
+            style: TextStyle(
+                fontSize: 32,
+                color: dark_color.withOpacity(.8),
+                fontWeight: FontWeight.bold)),
       ),
     );
   }
@@ -149,14 +141,12 @@ class _PhotosGrid extends StatelessWidget {
               image_path: e,
             ))
         .toList();
-    photos.add(_PhotoPreview(image_path: 'lol'));
-    photos.add(_PhotoPreview(image_path: 'lol'));
     return Container(
       child: SliverGrid.count(
         crossAxisSpacing: 8,
         mainAxisSpacing: 8,
         crossAxisCount: 3,
-        children: photos.reversed.toList(),
+        children: photos,
       ),
     );
   }
@@ -177,57 +167,17 @@ class _PhotoPreview extends StatelessWidget {
   }
 }
 
-class _AddPhotoTile extends StatelessWidget {
-  const _AddPhotoTile({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          height: 100,
-          width: 100,
-          color: secondary_color,
-          child: Center(
-              child: Icon(
-            Icons.add_a_photo_rounded,
-            color: dark_color,
-            size: 40,
-          )),
-        ),
-        Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (BuildContext context) => const TakePictureScreen(),
-                ),
-              );
-            },
-            splashColor: accent_color.withOpacity(.1),
-            hoverColor: accent_color.withOpacity(.1),
-            highlightColor: accent_color.withOpacity(.1),
-            child: Container(
-              alignment: Alignment.center,
-              height: 100,
-              width: 100,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 class _AddPhotoButton extends StatelessWidget {
   _AddPhotoButton({Key? key, required this.update_widget}) : super(key: key);
   final update_widget;
 
   @override
   Widget build(BuildContext context) {
+    AddPostController ap_ctrl = Get.find();
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: ap_ctrl.photos.isEmpty
+          ? const EdgeInsets.only(left: 16, right: 16, bottom: 16)
+          : const EdgeInsets.all(16),
       child: Stack(
         children: [
           Container(
@@ -284,258 +234,264 @@ class _MetadataWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: gray_color,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Text('Metadata',
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Metadata',
                 style: TextStyle(
                     fontSize: 32,
                     color: dark_color.withOpacity(.8),
                     fontWeight: FontWeight.bold)),
-          ),
-          SizedBox(height: 16),
-          Row(
-            children: [
-              Flexible(
-                flex: 1,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8, right: 4),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(30)),
-                    child: TextField(
-                      keyboardType: TextInputType.text,
-                      style: TextStyle(color: dark_color.withOpacity(.8)),
-                      decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        labelStyle:
-                            TextStyle(color: dark_color.withOpacity(.4)),
-                        hintStyle: TextStyle(color: dark_color.withOpacity(.1)),
-                        enabledBorder: OutlineInputBorder(
+            SizedBox(height: 16),
+            Row(
+              children: [
+                Flexible(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 4),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(30)),
+                      child: TextField(
+                        keyboardType: TextInputType.text,
+                        style: TextStyle(color: dark_color.withOpacity(.8)),
+                        decoration: InputDecoration(
+                          fillColor: Colors.white,
+                          labelStyle:
+                              TextStyle(color: dark_color.withOpacity(.4)),
+                          hintStyle:
+                              TextStyle(color: dark_color.withOpacity(.1)),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                              borderSide: BorderSide(
+                                  color: Colors.white.withOpacity(.4))),
+                          focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(30.0),
-                            borderSide: BorderSide(
-                                color: Colors.white.withOpacity(.4))),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide:
-                              BorderSide(color: dark_color.withOpacity(.4)),
+                            borderSide:
+                                BorderSide(color: dark_color.withOpacity(.4)),
+                          ),
+                          labelText: 'Latitude',
+                          hintText: 'Latitude',
                         ),
-                        labelText: 'Latitude',
-                        hintText: 'Latitude',
                       ),
                     ),
                   ),
                 ),
-              ),
-              Flexible(
-                flex: 1,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 4, right: 8),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(30)),
-                    child: TextField(
-                      keyboardType: TextInputType.text,
-                      style: TextStyle(color: dark_color.withOpacity(.8)),
-                      decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        labelStyle:
-                            TextStyle(color: dark_color.withOpacity(.4)),
-                        hintStyle: TextStyle(color: dark_color.withOpacity(.1)),
-                        enabledBorder: OutlineInputBorder(
+                Flexible(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 4),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(30)),
+                      child: TextField(
+                        keyboardType: TextInputType.text,
+                        style: TextStyle(color: dark_color.withOpacity(.8)),
+                        decoration: InputDecoration(
+                          fillColor: Colors.white,
+                          labelStyle:
+                              TextStyle(color: dark_color.withOpacity(.4)),
+                          hintStyle:
+                              TextStyle(color: dark_color.withOpacity(.1)),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                              borderSide: BorderSide(
+                                  color: Colors.white.withOpacity(.4))),
+                          focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(30.0),
-                            borderSide: BorderSide(
-                                color: Colors.white.withOpacity(.4))),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide:
-                              BorderSide(color: dark_color.withOpacity(.4)),
+                            borderSide:
+                                BorderSide(color: dark_color.withOpacity(.4)),
+                          ),
+                          labelText: 'Longitude',
+                          hintText: 'Longitude',
                         ),
-                        labelText: 'Longitude',
-                        hintText: 'Longitude',
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: 16),
-          Row(
-            children: [
-              Flexible(
-                flex: 1,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8, right: 4),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(30)),
-                    child: TextField(
-                      keyboardType: TextInputType.text,
-                      style: TextStyle(color: dark_color.withOpacity(.8)),
-                      decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        labelStyle:
-                            TextStyle(color: dark_color.withOpacity(.4)),
-                        hintStyle: TextStyle(color: dark_color.withOpacity(.1)),
-                        enabledBorder: OutlineInputBorder(
+              ],
+            ),
+            SizedBox(height: 16),
+            Row(
+              children: [
+                Flexible(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 4),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(30)),
+                      child: TextField(
+                        keyboardType: TextInputType.text,
+                        style: TextStyle(color: dark_color.withOpacity(.8)),
+                        decoration: InputDecoration(
+                          fillColor: Colors.white,
+                          labelStyle:
+                              TextStyle(color: dark_color.withOpacity(.4)),
+                          hintStyle:
+                              TextStyle(color: dark_color.withOpacity(.1)),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                              borderSide: BorderSide(
+                                  color: Colors.white.withOpacity(.4))),
+                          focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(30.0),
-                            borderSide: BorderSide(
-                                color: Colors.white.withOpacity(.4))),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide:
-                              BorderSide(color: dark_color.withOpacity(.4)),
+                            borderSide:
+                                BorderSide(color: dark_color.withOpacity(.4)),
+                          ),
+                          labelText: 'X',
+                          hintText: 'X',
                         ),
-                        labelText: 'X',
-                        hintText: 'X',
                       ),
                     ),
                   ),
                 ),
-              ),
-              Flexible(
-                flex: 1,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 4, right: 4),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(30)),
-                    child: TextField(
-                      keyboardType: TextInputType.text,
-                      style: TextStyle(color: dark_color.withOpacity(.8)),
-                      decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        labelStyle:
-                            TextStyle(color: dark_color.withOpacity(.4)),
-                        hintStyle: TextStyle(color: dark_color.withOpacity(.1)),
-                        enabledBorder: OutlineInputBorder(
+                Flexible(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 4, right: 4),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(30)),
+                      child: TextField(
+                        keyboardType: TextInputType.text,
+                        style: TextStyle(color: dark_color.withOpacity(.8)),
+                        decoration: InputDecoration(
+                          fillColor: Colors.white,
+                          labelStyle:
+                              TextStyle(color: dark_color.withOpacity(.4)),
+                          hintStyle:
+                              TextStyle(color: dark_color.withOpacity(.1)),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                              borderSide: BorderSide(
+                                  color: Colors.white.withOpacity(.4))),
+                          focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(30.0),
-                            borderSide: BorderSide(
-                                color: Colors.white.withOpacity(.4))),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide:
-                              BorderSide(color: dark_color.withOpacity(.4)),
+                            borderSide:
+                                BorderSide(color: dark_color.withOpacity(.4)),
+                          ),
+                          labelText: 'Y',
+                          hintText: 'Y',
                         ),
-                        labelText: 'Y',
-                        hintText: 'Y',
                       ),
                     ),
                   ),
                 ),
-              ),
-              Flexible(
-                flex: 1,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 4, right: 8),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(30)),
-                    child: TextField(
-                      keyboardType: TextInputType.text,
-                      style: TextStyle(color: dark_color.withOpacity(.8)),
-                      decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        labelStyle:
-                            TextStyle(color: dark_color.withOpacity(.4)),
-                        hintStyle: TextStyle(color: dark_color.withOpacity(.1)),
-                        enabledBorder: OutlineInputBorder(
+                Flexible(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 4),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(30)),
+                      child: TextField(
+                        keyboardType: TextInputType.text,
+                        style: TextStyle(color: dark_color.withOpacity(.8)),
+                        decoration: InputDecoration(
+                          fillColor: Colors.white,
+                          labelStyle:
+                              TextStyle(color: dark_color.withOpacity(.4)),
+                          hintStyle:
+                              TextStyle(color: dark_color.withOpacity(.1)),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                              borderSide: BorderSide(
+                                  color: Colors.white.withOpacity(.4))),
+                          focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(30.0),
-                            borderSide: BorderSide(
-                                color: Colors.white.withOpacity(.4))),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide:
-                              BorderSide(color: dark_color.withOpacity(.4)),
+                            borderSide:
+                                BorderSide(color: dark_color.withOpacity(.4)),
+                          ),
+                          labelText: 'Z',
+                          hintText: 'Z',
                         ),
-                        labelText: 'Z',
-                        hintText: 'Z',
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: 16),
-          Row(
-            children: [
-              Flexible(
-                flex: 1,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8, right: 4),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(30)),
-                    child: TextField(
-                      keyboardType: TextInputType.text,
-                      style: TextStyle(color: dark_color.withOpacity(.8)),
-                      decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        labelStyle:
-                            TextStyle(color: dark_color.withOpacity(.4)),
-                        hintStyle: TextStyle(color: dark_color.withOpacity(.1)),
-                        enabledBorder: OutlineInputBorder(
+              ],
+            ),
+            SizedBox(height: 16),
+            Row(
+              children: [
+                Flexible(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 4),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(30)),
+                      child: TextField(
+                        keyboardType: TextInputType.text,
+                        style: TextStyle(color: dark_color.withOpacity(.8)),
+                        decoration: InputDecoration(
+                          fillColor: Colors.white,
+                          labelStyle:
+                              TextStyle(color: dark_color.withOpacity(.4)),
+                          hintStyle:
+                              TextStyle(color: dark_color.withOpacity(.1)),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                              borderSide: BorderSide(
+                                  color: Colors.white.withOpacity(.4))),
+                          focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(30.0),
-                            borderSide: BorderSide(
-                                color: Colors.white.withOpacity(.4))),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide:
-                              BorderSide(color: dark_color.withOpacity(.4)),
+                            borderSide:
+                                BorderSide(color: dark_color.withOpacity(.4)),
+                          ),
+                          labelText: 'Azimuth',
+                          hintText: 'Azimuth',
                         ),
-                        labelText: 'Azimuth',
-                        hintText: 'Azimuth',
                       ),
                     ),
                   ),
                 ),
-              ),
-              Flexible(
-                flex: 1,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 4, right: 8),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(30)),
-                    child: TextField(
-                      keyboardType: TextInputType.text,
-                      style: TextStyle(color: dark_color.withOpacity(.8)),
-                      decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        labelStyle:
-                            TextStyle(color: dark_color.withOpacity(.4)),
-                        hintStyle: TextStyle(color: dark_color.withOpacity(.1)),
-                        enabledBorder: OutlineInputBorder(
+                Flexible(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 4),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(30)),
+                      child: TextField(
+                        keyboardType: TextInputType.text,
+                        style: TextStyle(color: dark_color.withOpacity(.8)),
+                        decoration: InputDecoration(
+                          fillColor: Colors.white,
+                          labelStyle:
+                              TextStyle(color: dark_color.withOpacity(.4)),
+                          hintStyle:
+                              TextStyle(color: dark_color.withOpacity(.1)),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                              borderSide: BorderSide(
+                                  color: Colors.white.withOpacity(.4))),
+                          focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(30.0),
-                            borderSide: BorderSide(
-                                color: Colors.white.withOpacity(.4))),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide:
-                              BorderSide(color: dark_color.withOpacity(.4)),
+                            borderSide:
+                                BorderSide(color: dark_color.withOpacity(.4)),
+                          ),
+                          labelText: 'Altitude',
+                          hintText: 'Altitude',
                         ),
-                        labelText: 'Altitude',
-                        hintText: 'Altitude',
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -548,7 +504,7 @@ class _PostData extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -618,7 +574,7 @@ class _AddPostButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 8, right: 8, bottom: 16),
+      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
       child: Stack(
         children: [
           Container(
