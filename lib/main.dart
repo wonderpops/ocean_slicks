@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:ocean_slicks/constants/colors.dart';
 import 'package:ocean_slicks/widgets/auth/login_screen.dart';
@@ -26,6 +29,17 @@ Future<void> main() async {
   Get.put(cam_ctrl);
 
   bool user_is_auth = await auth_ctrl.check_auth();
+
+  // SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+  // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+  //   statusBarColor: secondary_color,
+  // ));
+
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual);
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: secondary_color,
+    systemNavigationBarColor: secondary_color,
+  ));
 
   runApp(
     MaterialApp(

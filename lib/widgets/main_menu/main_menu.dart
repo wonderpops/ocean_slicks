@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_connect/connect.dart';
 import 'package:ocean_slicks/constants/colors.dart';
 import 'package:ocean_slicks/widgets/add_post_screen/add_post_screen.dart';
 import 'package:ocean_slicks/widgets/home_screen/home_screen.dart';
@@ -37,11 +38,8 @@ Widget getBodyByIndex(index) {
 class _MainMenuWidgetState extends State<MainMenuWidget> {
   @override
   Widget build(BuildContext context) {
-    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: accent_color,
-    ));
     return Scaffold(
+        resizeToAvoidBottomInset: true,
         bottomNavigationBar: Container(
           color: light_color,
           child: SalomonBottomBar(
@@ -78,6 +76,6 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
             ],
           ),
         ),
-        body: getBodyByIndex(_current_index));
+        body: SafeArea(child: getBodyByIndex(_current_index)));
   }
 }

@@ -55,135 +55,139 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           // If the Future is complete, display the preview.
-          return Stack(
-            alignment: Alignment.center,
-            children: [
-              CameraPreview(_controller),
-              Positioned(
-                bottom: 10,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      height: 100,
-                      child: Center(
-                        child: Container(
-                          height: 80,
-                          width: 80,
-                          child: Stack(
-                            children: [
-                              Center(
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(40),
-                                      color: Colors.white.withOpacity(.9),
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: Icon(Icons.camera,
-                                        size: 60,
-                                        color: Colors.indigo.withOpacity(.6))),
-                              ),
-                              Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  onTap: () async {
-                                    // Take the Picture in a try / catch block. If anything goes wrong,
-                                    // catch the error.
-                                    try {
-                                      // Ensure that the camera is initialized.
-                                      await _initializeControllerFuture;
-
-                                      // Attempt to take a picture and get the file `image`
-                                      // where it was saved.
-                                      final image =
-                                          await _controller.takePicture();
-
-                                      String timestamp() => DateTime.now()
-                                          .millisecondsSinceEpoch
-                                          .toString();
-                                      final Directory extDir =
-                                          await getApplicationDocumentsDirectory();
-                                      final String dirPath =
-                                          '${extDir.path}/Pictures/flutter_test';
-                                      await Directory(dirPath)
-                                          .create(recursive: true);
-                                      final String filePath =
-                                          '$dirPath/${timestamp()}.jpg';
-
-                                      image.saveTo(filePath);
-
-                                      AddPostController ap_ctrl = Get.find();
-                                      ap_ctrl.photos.add(filePath);
-
-                                      // If the picture was taken, display it on a new screen.
-                                      Navigator.of(context).pop();
-                                    } catch (e) {
-                                      // If an error occurs, log the error to the console.
-                                      print(e);
-                                    }
-                                  },
-                                  splashColor: accent_color.withOpacity(.1),
-                                  hoverColor: accent_color.withOpacity(.1),
-                                  highlightColor: accent_color.withOpacity(.1),
-                                  borderRadius: BorderRadius.circular(40),
+          return SafeArea(
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                CameraPreview(_controller),
+                Positioned(
+                  bottom: 10,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                        height: 100,
+                        child: Center(
+                          child: Container(
+                            height: 80,
+                            width: 80,
+                            child: Stack(
+                              children: [
+                                Center(
                                   child: Container(
-                                    alignment: Alignment.center,
-                                    width: double.maxFinite,
-                                    height: double.maxFinite,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 16),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(40),
+                                        color: Colors.white.withOpacity(.9),
+                                      ),
+                                      alignment: Alignment.center,
+                                      child: Icon(Icons.camera,
+                                          size: 60,
+                                          color:
+                                              Colors.indigo.withOpacity(.6))),
+                                ),
+                                Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    onTap: () async {
+                                      // Take the Picture in a try / catch block. If anything goes wrong,
+                                      // catch the error.
+                                      try {
+                                        // Ensure that the camera is initialized.
+                                        await _initializeControllerFuture;
+
+                                        // Attempt to take a picture and get the file `image`
+                                        // where it was saved.
+                                        final image =
+                                            await _controller.takePicture();
+
+                                        String timestamp() => DateTime.now()
+                                            .millisecondsSinceEpoch
+                                            .toString();
+                                        final Directory extDir =
+                                            await getApplicationDocumentsDirectory();
+                                        final String dirPath =
+                                            '${extDir.path}/Pictures/flutter_test';
+                                        await Directory(dirPath)
+                                            .create(recursive: true);
+                                        final String filePath =
+                                            '$dirPath/${timestamp()}.jpg';
+
+                                        image.saveTo(filePath);
+
+                                        AddPostController ap_ctrl = Get.find();
+                                        ap_ctrl.photos.add(filePath);
+
+                                        // If the picture was taken, display it on a new screen.
+                                        Navigator.of(context).pop();
+                                      } catch (e) {
+                                        // If an error occurs, log the error to the console.
+                                        print(e);
+                                      }
+                                    },
+                                    splashColor: accent_color.withOpacity(.1),
+                                    hoverColor: accent_color.withOpacity(.1),
+                                    highlightColor:
+                                        accent_color.withOpacity(.1),
+                                    borderRadius: BorderRadius.circular(40),
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      width: double.maxFinite,
+                                      height: double.maxFinite,
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 16),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Positioned(
-                top: 10,
-                left: 10,
-                child: Row(
-                  children: [
-                    Stack(
-                      children: [
-                        Container(
-                            height: 40,
-                            decoration: BoxDecoration(
-                                color: Colors.indigo.withOpacity(.1),
-                                borderRadius: BorderRadius.circular(20)),
-                            child: Icon(
-                              Icons.arrow_back,
-                              color: Colors.white,
-                              size: 40,
-                            )),
-                        Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {
-                              print('alo');
-                              Navigator.of(context).pop();
-                            },
-                            splashColor: accent_color.withOpacity(.1),
-                            hoverColor: accent_color.withOpacity(.1),
-                            highlightColor: accent_color.withOpacity(.1),
-                            borderRadius: BorderRadius.circular(20),
-                            child: Container(
-                              alignment: Alignment.center,
-                              height: 40,
-                              width: 40,
+                              ],
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
-              )
-            ],
+                Positioned(
+                  top: 10,
+                  left: 10,
+                  child: Row(
+                    children: [
+                      Stack(
+                        children: [
+                          Container(
+                              height: 40,
+                              decoration: BoxDecoration(
+                                  color: Colors.indigo.withOpacity(.1),
+                                  borderRadius: BorderRadius.circular(20)),
+                              child: Icon(
+                                Icons.arrow_back,
+                                color: Colors.white,
+                                size: 40,
+                              )),
+                          Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () {
+                                print('alo');
+                                Navigator.of(context).pop();
+                              },
+                              splashColor: accent_color.withOpacity(.1),
+                              hoverColor: accent_color.withOpacity(.1),
+                              highlightColor: accent_color.withOpacity(.1),
+                              borderRadius: BorderRadius.circular(20),
+                              child: Container(
+                                alignment: Alignment.center,
+                                height: 40,
+                                width: 40,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
           );
         } else {
           // Otherwise, display a loading indicator.

@@ -10,7 +10,7 @@ class ChatScreenWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     print(chat_id);
     return Scaffold(
-      body: Container(
+      body: SafeArea(
         child: Column(
           children: [
             _ChatHeaderWidget(),

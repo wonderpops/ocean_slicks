@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -65,8 +67,6 @@ class _LoginScreenWidgetState extends State<LoginScreenWidget> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
