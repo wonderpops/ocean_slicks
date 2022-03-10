@@ -26,15 +26,15 @@ class HomeScreenWidget extends StatelessWidget {
                   // SizedBox(height: 32),
                   // _AddPostWidget(),
                   // _ActionButtons(),
-                  SizedBox(height: 32),
+                  SizedBox(height: 16),
                   Text('Discover',
                       style: TextStyle(
                           fontSize: 32,
                           color: dark_color.withOpacity(.8),
                           fontWeight: FontWeight.bold)),
-                  SizedBox(height: 32),
+                  SizedBox(height: 16),
                   _SearchWidget(),
-                  SizedBox(height: 32),
+                  SizedBox(height: 16),
                   _DiscoverWidget()
                 ],
               ),
@@ -77,62 +77,65 @@ class _PersonDataWidget extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(width: 32),
-          Stack(
+          Row(
             children: [
-              Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20)),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                  child: Icon(Icons.notifications_none,
-                      color: dark_color.withOpacity(.8)),
-                ),
-              ),
-              Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {
-                    showModalBottomSheet(
-                        backgroundColor: Colors.transparent,
-                        context: context,
-                        builder: (context) {
-                          return _NotificationsBoxWidget(
-                              notifications: notifications);
-                        });
-                  },
-                  splashColor: secondary_color.withOpacity(.1),
-                  hoverColor: secondary_color.withOpacity(.1),
-                  borderRadius: BorderRadius.circular(30),
-                  child: Container(
-                    alignment: Alignment.center,
-                    width: 40,
-                    height: 40,
+              Stack(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 8),
+                      child: Icon(Icons.notifications_none,
+                          color: dark_color.withOpacity(.8)),
+                    ),
                   ),
-                ),
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () {
+                        showModalBottomSheet(
+                            backgroundColor: Colors.transparent,
+                            context: context,
+                            builder: (context) {
+                              return _NotificationsBoxWidget(
+                                  notifications: notifications);
+                            });
+                      },
+                      splashColor: secondary_color.withOpacity(.1),
+                      hoverColor: secondary_color.withOpacity(.1),
+                      borderRadius: BorderRadius.circular(30),
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: 40,
+                        height: 40,
+                      ),
+                    ),
+                  ),
+                  Visibility(
+                    visible: notifications.isNotEmpty,
+                    child: Positioned(
+                        top: 7,
+                        right: 7,
+                        child: Container(
+                          height: 8,
+                          width: 8,
+                          decoration: BoxDecoration(
+                              color: Colors.pink.withOpacity(.8),
+                              borderRadius: BorderRadius.circular(8)),
+                        )),
+                  )
+                ],
               ),
-              Visibility(
-                visible: notifications.isNotEmpty,
-                child: Positioned(
-                    top: 7,
-                    right: 7,
-                    child: Container(
-                      height: 8,
-                      width: 8,
-                      decoration: BoxDecoration(
-                          color: Colors.pink.withOpacity(.8),
-                          borderRadius: BorderRadius.circular(8)),
-                    )),
-              )
+              SizedBox(width: 16),
+              CircleAvatar(
+                radius: 30,
+                backgroundColor: secondary_color,
+                child: Icon(Icons.person_outline_outlined, color: Colors.white),
+              ),
             ],
-          ),
-          SizedBox(width: 4),
-          CircleAvatar(
-            radius: 30,
-            backgroundColor: secondary_color,
-            child: Icon(Icons.person_outline_outlined, color: Colors.white),
           )
         ],
       ),
