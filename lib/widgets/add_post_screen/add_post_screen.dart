@@ -58,40 +58,45 @@ class _AddPostWidgetState extends State<AddPostWidget> {
   }
 }
 
-class _PlacePreview extends StatefulWidget {
+class _PlacePreview extends StatelessWidget {
   _PlacePreview({Key? key}) : super(key: key);
 
-  @override
-  State<_PlacePreview> createState() => _PlacePreviewState();
-}
-
-class _PlacePreviewState extends State<_PlacePreview> {
   final _mapKey = UniqueKey();
-
-  List markers = [];
 
   double map_height = 200;
 
   @override
   Widget build(BuildContext context) {
+    AddPostController ap_ctrl = Get.find();
     double map_width = MediaQuery.of(context).size.width;
+    print(ap_ctrl.latitude);
     return Stack(children: [
       Container(
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
         height: map_height,
         child: U.OpenStreetMap(
-          key: _mapKey,
-          type: OpenStreetMapType.Mapnik,
-          options: TileLayerOptions(),
-          size: Size(map_width, map_height),
-          showCompass: false,
-          showLocator: false,
-          center: [51.555158, -0.108343],
-          zoom: 12,
-          markers: U.MarkerLayer(
-            markers,
-          ),
-        ),
+            key: _mapKey,
+            type: OpenStreetMapType.Mapnik,
+            options: TileLayerOptions(),
+            size: Size(map_width, map_height),
+            showCompass: false,
+            showLocator: false,
+            center: [ap_ctrl.latitude, ap_ctrl.longitude],
+            zoom: 15,
+            markers: ap_ctrl.photos.isEmpty
+                ? U.MarkerLayer(
+                    [],
+                  )
+                : U.MarkerLayer(
+                    [
+                      Marker([ap_ctrl.latitude, ap_ctrl.longitude],
+                          widget: Icon(
+                            Icons.place_rounded,
+                            color: accent_color,
+                            size: 50,
+                          ))
+                    ],
+                  )),
       ),
       InkWell(
         onTap: () {
@@ -100,7 +105,7 @@ class _PlacePreviewState extends State<_PlacePreview> {
           // setState(() {});
         },
         child: Container(
-          height: 200,
+          height: map_height,
         ),
       )
     ]);
@@ -229,10 +234,35 @@ class _AddPhotoButton extends StatelessWidget {
 }
 
 class _MetadataWidget extends StatelessWidget {
-  const _MetadataWidget({Key? key}) : super(key: key);
+  _MetadataWidget({Key? key}) : super(key: key);
+  final TextEditingController latitude_ctrl = TextEditingController();
+  final TextEditingController longitude_ctrl = TextEditingController();
+  final TextEditingController altitude_ctrl = TextEditingController();
+
+  final TextEditingController x_angle_ctrl = TextEditingController();
+  final TextEditingController y_angle_ctrl = TextEditingController();
+  final TextEditingController z_angle_ctrl = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    AddPostController ap_ctrl = Get.find();
+
+    if (ap_ctrl.xInclination != 0 ||
+        ap_ctrl.yInclination != 0 ||
+        ap_ctrl.zInclination != 0) {
+      x_angle_ctrl.text = ap_ctrl.xInclination.toString();
+      y_angle_ctrl.text = ap_ctrl.yInclination.toString();
+      z_angle_ctrl.text = ap_ctrl.zInclination.toString();
+    }
+
+    if (ap_ctrl.latitude != 0 ||
+        ap_ctrl.longitude != 0 ||
+        ap_ctrl.altitude != 0) {
+      latitude_ctrl.text = ap_ctrl.latitude.toString();
+      longitude_ctrl.text = ap_ctrl.longitude.toString();
+      altitude_ctrl.text = ap_ctrl.altitude.toString();
+    }
+
     return Container(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -256,7 +286,8 @@ class _MetadataWidget extends StatelessWidget {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(30)),
                       child: TextField(
-                        keyboardType: TextInputType.text,
+                        controller: latitude_ctrl,
+                        keyboardType: TextInputType.number,
                         style: TextStyle(color: dark_color.withOpacity(.8)),
                         decoration: InputDecoration(
                           fillColor: Colors.white,
@@ -289,7 +320,8 @@ class _MetadataWidget extends StatelessWidget {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(30)),
                       child: TextField(
-                        keyboardType: TextInputType.text,
+                        controller: longitude_ctrl,
+                        keyboardType: TextInputType.number,
                         style: TextStyle(color: dark_color.withOpacity(.8)),
                         decoration: InputDecoration(
                           fillColor: Colors.white,
@@ -327,7 +359,8 @@ class _MetadataWidget extends StatelessWidget {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(30)),
                       child: TextField(
-                        keyboardType: TextInputType.text,
+                        controller: x_angle_ctrl,
+                        keyboardType: TextInputType.number,
                         style: TextStyle(color: dark_color.withOpacity(.8)),
                         decoration: InputDecoration(
                           fillColor: Colors.white,
@@ -344,8 +377,8 @@ class _MetadataWidget extends StatelessWidget {
                             borderSide:
                                 BorderSide(color: dark_color.withOpacity(.4)),
                           ),
-                          labelText: 'X',
-                          hintText: 'X',
+                          labelText: 'X Angle',
+                          hintText: 'X Angle',
                         ),
                       ),
                     ),
@@ -360,6 +393,7 @@ class _MetadataWidget extends StatelessWidget {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(30)),
                       child: TextField(
+                        controller: y_angle_ctrl,
                         keyboardType: TextInputType.text,
                         style: TextStyle(color: dark_color.withOpacity(.8)),
                         decoration: InputDecoration(
@@ -377,8 +411,8 @@ class _MetadataWidget extends StatelessWidget {
                             borderSide:
                                 BorderSide(color: dark_color.withOpacity(.4)),
                           ),
-                          labelText: 'Y',
-                          hintText: 'Y',
+                          labelText: 'Y Angle',
+                          hintText: 'Y Angle',
                         ),
                       ),
                     ),
@@ -393,6 +427,7 @@ class _MetadataWidget extends StatelessWidget {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(30)),
                       child: TextField(
+                        controller: z_angle_ctrl,
                         keyboardType: TextInputType.text,
                         style: TextStyle(color: dark_color.withOpacity(.8)),
                         decoration: InputDecoration(
@@ -410,8 +445,8 @@ class _MetadataWidget extends StatelessWidget {
                             borderSide:
                                 BorderSide(color: dark_color.withOpacity(.4)),
                           ),
-                          labelText: 'Z',
-                          hintText: 'Z',
+                          labelText: 'Z Angle',
+                          hintText: 'Z Angle',
                         ),
                       ),
                     ),
@@ -464,7 +499,8 @@ class _MetadataWidget extends StatelessWidget {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(30)),
                       child: TextField(
-                        keyboardType: TextInputType.text,
+                        controller: altitude_ctrl,
+                        keyboardType: TextInputType.number,
                         style: TextStyle(color: dark_color.withOpacity(.8)),
                         decoration: InputDecoration(
                           fillColor: Colors.white,

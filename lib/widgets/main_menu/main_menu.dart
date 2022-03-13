@@ -64,13 +64,13 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
                 TextButton(
                   onPressed: () {
                     _dismissDialog();
-                    ap_ctrl.photos = [];
+                    ap_ctrl.clear_data();
                     _current_index = i;
                     setState(() {});
                   },
                   child: Text(
-                    'Leave screen',
-                    style: TextStyle(color: Colors.red[200]),
+                    'Leave',
+                    style: TextStyle(color: Colors.red[300]),
                   ),
                 )
               ],
