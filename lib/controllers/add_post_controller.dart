@@ -8,6 +8,7 @@ class AddPostController extends GetxController {
   double xInclination = 0;
   double yInclination = 0;
   double zInclination = 0;
+  int selectedImageId = -1;
 
   void clear_data() {
     photos = [].obs;
@@ -17,5 +18,6 @@ class AddPostController extends GetxController {
     xInclination = 0;
     yInclination = 0;
     zInclination = 0;
+    int selectedImageId = 0;
   }
 }

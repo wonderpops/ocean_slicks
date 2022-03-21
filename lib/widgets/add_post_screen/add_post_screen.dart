@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ocean_slicks/constants/colors.dart';
 import 'package:ocean_slicks/controllers/add_post_controller.dart';
+import 'package:path/path.dart';
 import 'package:universe/universe.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -42,7 +43,9 @@ class _AddPostWidgetState extends State<AddPostWidget> {
                   visible: ap_ctrl.photos.isNotEmpty,
                   sliver: SliverPadding(
                       padding: EdgeInsets.symmetric(horizontal: 16),
-                      sliver: _PhotosGrid())),
+                      sliver: _PhotosGrid(
+                        update_data: update_data,
+                      ))),
               SliverList(
                   delegate: SliverChildListDelegate([
                 _AddPhotoButton(update_widget: update_data),
@@ -69,35 +72,42 @@ class _PlacePreview extends StatelessWidget {
   Widget build(BuildContext context) {
     AddPostController ap_ctrl = Get.find();
     double map_width = MediaQuery.of(context).size.width;
-    print(ap_ctrl.latitude);
+    var selected_image = {};
+    if (ap_ctrl.selectedImageId < ap_ctrl.photos.length) {
+      selected_image = ap_ctrl.photos[ap_ctrl.selectedImageId];
+    }
     return Stack(children: [
       Container(
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
-        height: map_height,
-        child: U.OpenStreetMap(
-            key: _mapKey,
-            type: OpenStreetMapType.Mapnik,
-            options: TileLayerOptions(),
-            size: Size(map_width, map_height),
-            showCompass: false,
-            showLocator: false,
-            center: [ap_ctrl.latitude, ap_ctrl.longitude],
-            zoom: 15,
-            markers: ap_ctrl.photos.isEmpty
-                ? U.MarkerLayer(
-                    [],
-                  )
-                : U.MarkerLayer(
-                    [
-                      Marker([ap_ctrl.latitude, ap_ctrl.longitude],
-                          widget: Icon(
-                            Icons.place_rounded,
-                            color: accent_color,
-                            size: 50,
-                          ))
-                    ],
-                  )),
-      ),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+          height: map_height,
+          child: U.OpenStreetMap(
+              key: _mapKey,
+              type: OpenStreetMapType.Mapnik,
+              options: TileLayerOptions(),
+              size: Size(map_width, map_height),
+              showCompass: false,
+              showLocator: false,
+              center: selected_image.isNotEmpty
+                  ? [selected_image['latitude'], selected_image['longitude']]
+                  : [0, 0],
+              zoom: 15,
+              markers: selected_image.isNotEmpty
+                  ? U.MarkerLayer(
+                      [
+                        Marker([
+                          ap_ctrl.photos[ap_ctrl.selectedImageId]['latitude'],
+                          ap_ctrl.photos[ap_ctrl.selectedImageId]['longitude']
+                        ],
+                            widget: Icon(
+                              Icons.place_rounded,
+                              color: accent_color,
+                              size: 50,
+                            ))
+                      ],
+                    )
+                  : U.MarkerLayer(
+                      [],
+                    ))),
       InkWell(
         onTap: () {
           //TODO change position here
@@ -135,15 +145,29 @@ class _PhotosWidgetState extends State<_PhotosWidget> {
   }
 }
 
-class _PhotosGrid extends StatelessWidget {
-  const _PhotosGrid({Key? key}) : super(key: key);
+class _PhotosGrid extends StatefulWidget {
+  _PhotosGrid({Key? key, required this.update_data}) : super(key: key);
+  final update_data;
+
+  @override
+  State<_PhotosGrid> createState() => _PhotosGridState();
+}
+
+class _PhotosGridState extends State<_PhotosGrid> {
+  void photo_on_click(ph_id) {
+    AddPostController ap_ctrl = Get.find();
+    ap_ctrl.selectedImageId = ph_id;
+    widget.update_data();
+  }
 
   @override
   Widget build(BuildContext context) {
     AddPostController ap_ctrl = Get.find();
+    print(ap_ctrl.selectedImageId);
     List<Widget> photos = ap_ctrl.photos
         .map((e) => _PhotoPreview(
-              image_path: e,
+              image: e,
+              phOnclick: photo_on_click,
             ))
         .toList();
     return Container(
@@ -158,16 +182,52 @@ class _PhotosGrid extends StatelessWidget {
 }
 
 class _PhotoPreview extends StatelessWidget {
-  _PhotoPreview({Key? key, required this.image_path}) : super(key: key);
-  final image_path;
+  _PhotoPreview({
+    Key? key,
+    required this.image,
+    required this.phOnclick,
+  }) : super(key: key);
+  final image;
+  final phOnclick;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Image.file(
-        File(image_path),
-        fit: BoxFit.cover,
-      ),
+    AddPostController ap_ctrl = Get.find();
+    return GridTile(
+      child: Stack(children: [
+        Positioned.fill(
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                color: ap_ctrl.selectedImageId == image['id']
+                    ? accent_color.withOpacity(.2)
+                    : Colors.transparent),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.file(
+                  File(image['filePath']),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+        ),
+        Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                print(image['id']);
+                phOnclick(image['id']);
+              },
+              splashColor: accent_color.withOpacity(.2),
+              hoverColor: accent_color.withOpacity(.2),
+              highlightColor: accent_color.withOpacity(.2),
+              borderRadius: BorderRadius.circular(30),
+              enableFeedback: true,
+            ))
+      ]),
     );
   }
 }
@@ -247,20 +307,19 @@ class _MetadataWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     AddPostController ap_ctrl = Get.find();
 
-    if (ap_ctrl.xInclination != 0 ||
-        ap_ctrl.yInclination != 0 ||
-        ap_ctrl.zInclination != 0) {
-      x_angle_ctrl.text = ap_ctrl.xInclination.toString();
-      y_angle_ctrl.text = ap_ctrl.yInclination.toString();
-      z_angle_ctrl.text = ap_ctrl.zInclination.toString();
+    var selected_image = {};
+    if (ap_ctrl.selectedImageId < ap_ctrl.photos.length) {
+      selected_image = ap_ctrl.photos[ap_ctrl.selectedImageId];
     }
 
-    if (ap_ctrl.latitude != 0 ||
-        ap_ctrl.longitude != 0 ||
-        ap_ctrl.altitude != 0) {
-      latitude_ctrl.text = ap_ctrl.latitude.toString();
-      longitude_ctrl.text = ap_ctrl.longitude.toString();
-      altitude_ctrl.text = ap_ctrl.altitude.toString();
+    if (selected_image.isNotEmpty) {
+      x_angle_ctrl.text = selected_image['xInclination'].toString();
+      y_angle_ctrl.text = selected_image['yInclination'].toString();
+      z_angle_ctrl.text = selected_image['zInclination'].toString();
+
+      latitude_ctrl.text = selected_image['latitude'].toString();
+      longitude_ctrl.text = selected_image['longitude'].toString();
+      altitude_ctrl.text = selected_image['altitude'].toString();
     }
 
     return Container(

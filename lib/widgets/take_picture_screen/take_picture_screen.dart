@@ -107,27 +107,21 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
       AddPostController ap_ctrl = Get.find();
 
-      ap_ctrl.photos.add(filePath);
+      ap_ctrl.selectedImageId = ap_ctrl.photos.length;
+      ap_ctrl.photos.add({'id': ap_ctrl.photos.length, 'filePath': filePath});
 
       // TODO optimization needed
 
-      if (ap_ctrl.xInclination == 0 &&
-          ap_ctrl.yInclination == 0 &&
-          ap_ctrl.zInclination == 0) {
-        ap_ctrl.xInclination = xInclination;
-        ap_ctrl.yInclination = yInclination;
-        ap_ctrl.zInclination = zInclination;
-      }
+      ap_ctrl.photos.last['xInclination'] = xInclination;
+      ap_ctrl.photos.last['yInclination'] = yInclination;
+      ap_ctrl.photos.last['zInclination'] = zInclination;
 
-      if (ap_ctrl.latitude == 0 &&
-          ap_ctrl.longitude == 0 &&
-          ap_ctrl.altitude == 0) {
-        Position position = await Geolocator.getCurrentPosition(
-            desiredAccuracy: LocationAccuracy.best);
-        ap_ctrl.latitude = position.latitude;
-        ap_ctrl.longitude = position.longitude;
-        ap_ctrl.altitude = position.altitude;
-      }
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.best);
+      ap_ctrl.photos.last['latitude'] = position.latitude;
+      ap_ctrl.photos.last['longitude'] = position.longitude;
+      ap_ctrl.photos.last['altitude'] = position.altitude;
+
       // If the picture was taken, display it on a new screen.
       Navigator.of(context).pop();
     } catch (e) {
