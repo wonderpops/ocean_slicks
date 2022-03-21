@@ -11,6 +11,9 @@ class AddPostController extends GetxController {
 
   int remove_photo(id) {
     photos.remove(photos.elementAt(id));
-    return selectedImageId -= 1;
+    for (var i = 0; i < photos.length; i++) {
+      photos[i]['id'] = i;
+    }
+    return photos.isEmpty ? -1 : photos.last['id'];
   }
 }

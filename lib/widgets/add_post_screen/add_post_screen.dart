@@ -229,7 +229,7 @@ class _PhotoPreview extends StatelessWidget {
                       return AlertDialog(
                         title: Text('Warning!'),
                         content: Text(
-                            'You trying to delete photo. All photo data will be lost. \n\nContinue?'),
+                            'You trying to delete photo.\nAll photo data will be lost. \n\nContinue?'),
                         actions: <Widget>[
                           TextButton(
                               onPressed: () {
