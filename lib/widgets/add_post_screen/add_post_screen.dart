@@ -221,6 +221,36 @@ class _PhotoPreview extends StatelessWidget {
                 print(image['id']);
                 phOnclick(image['id']);
               },
+              onLongPress: () {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text('Warning!'),
+                        content: Text(
+                            'You trying to delete photo. All photo data will be lost. \n\nContinue?'),
+                        actions: <Widget>[
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text('Back',
+                                  style: TextStyle(
+                                      color: accent_color.withOpacity(.8)))),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              phOnclick(ap_ctrl.remove_photo(image['id']));
+                            },
+                            child: Text(
+                              'Delete',
+                              style: TextStyle(color: Colors.red[300]),
+                            ),
+                          )
+                        ],
+                      );
+                    });
+              },
               splashColor: accent_color.withOpacity(.2),
               hoverColor: accent_color.withOpacity(.2),
               highlightColor: accent_color.withOpacity(.2),
