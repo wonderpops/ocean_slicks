@@ -73,7 +73,8 @@ class _PlacePreview extends StatelessWidget {
     AddPostController ap_ctrl = Get.find();
     double map_width = MediaQuery.of(context).size.width;
     var selected_image = {};
-    if (ap_ctrl.selectedImageId < ap_ctrl.photos.length) {
+    if (0 <= ap_ctrl.selectedImageId &&
+        ap_ctrl.selectedImageId < ap_ctrl.photos.length) {
       selected_image = ap_ctrl.photos[ap_ctrl.selectedImageId];
     }
     return Stack(children: [
@@ -338,7 +339,8 @@ class _MetadataWidget extends StatelessWidget {
     AddPostController ap_ctrl = Get.find();
 
     var selected_image = {};
-    if (ap_ctrl.selectedImageId < ap_ctrl.photos.length) {
+    if (0 <= ap_ctrl.selectedImageId &&
+        ap_ctrl.selectedImageId < ap_ctrl.photos.length) {
       selected_image = ap_ctrl.photos[ap_ctrl.selectedImageId];
     }
 
