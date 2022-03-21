@@ -3,15 +3,19 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:ocean_slicks/controllers/CamerasController.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sensors_plus/sensors_plus.dart';
+import 'package:wakelock/wakelock.dart';
 
 import '../../constants/colors.dart';
 import '../../controllers/add_post_controller.dart';
 import 'dart:math';
+
+import 'package:flutter/foundation.dart';
 
 class _SensorsListeners {
   var accelerometer_listener =
@@ -33,12 +37,13 @@ class TakePictureScreen extends StatefulWidget {
 }
 
 class TakePictureScreenState extends State<TakePictureScreen> {
-  late CameraController _controller;
+  late CameraController _cameraController;
   late Future<void> _initializeControllerFuture;
   double xInclination = 0;
   double yInclination = 0;
   double zInclination = 0;
   String angles_data = '';
+  bool is_taking_picture = false;
 
   @override
   void initState() {
@@ -46,7 +51,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     super.initState();
     // To display the current output from the Camera,
     // create a CameraController.
-    _controller = CameraController(
+    _cameraController = CameraController(
       // Get a specific camera from the list of available cameras.
       cam_ctrl.cameras.first,
       // Define the resolution to use.
@@ -56,7 +61,16 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     // _sensorsListeners = _SensorsListeners();
 
     // Next, initialize the controller. This returns a Future.
-    _initializeControllerFuture = _controller.initialize();
+    _initializeControllerFuture = _cameraController.initialize();
+
+    _cameraController.setFlashMode(FlashMode.off);
+
+    Wakelock.enable();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.black,
+      systemNavigationBarColor: Colors.black,
+    ));
   }
 
   void get_camera_angles() async {
@@ -95,7 +109,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
       // Attempt to take a picture and get the file `image`
       // where it was saved.
-      final image = await _controller.takePicture();
+      final image = await _cameraController.takePicture();
 
       String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
       final Directory extDir = await getApplicationDocumentsDirectory();
@@ -122,7 +136,15 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       ap_ctrl.photos.last['longitude'] = position.longitude;
       ap_ctrl.photos.last['altitude'] = position.altitude;
 
+      Wakelock.disable();
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual);
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: secondary_color,
+        systemNavigationBarColor: secondary_color,
+      ));
+
       // If the picture was taken, display it on a new screen.
+
       Navigator.of(context).pop();
     } catch (e) {
       // If an error occurs, log the error to the console.
@@ -133,7 +155,8 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   @override
   void dispose() {
     // Dispose of the controller when the widget is disposed.
-    _controller.dispose();
+
+    _cameraController.dispose();
     // _sensorsListeners.accelerometer_listener.cancel();
     // _sensorsListeners.gyroscope_listener.cancel();
     super.dispose();
@@ -149,107 +172,124 @@ class TakePictureScreenState extends State<TakePictureScreen> {
           // If the Future is complete, display the preview.
           return SafeArea(
             child: Scaffold(
+              backgroundColor: Colors.black,
               body: Stack(
                 alignment: Alignment.center,
                 children: [
-                  CameraPreview(_controller),
-                  Positioned(
-                    bottom: 10,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Container(
-                          height: 100,
-                          child: Center(
-                            child: Container(
-                              height: 80,
-                              width: 80,
-                              child: Stack(
-                                children: [
-                                  Center(
-                                    child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(40),
-                                          color: Colors.white.withOpacity(.9),
-                                        ),
-                                        alignment: Alignment.center,
-                                        child: Icon(Icons.camera,
-                                            size: 60,
-                                            color:
-                                                accent_color.withOpacity(.6))),
+                  _CameraPreview(controller: _cameraController),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Stack(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                    height: 40,
+                                    child: Icon(
+                                      Icons.arrow_back,
+                                      color: Colors.white,
+                                      size: 40,
+                                    )),
+                              ),
+                              Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  onTap: () {
+                                    Wakelock.disable();
+                                    SystemChrome.setEnabledSystemUIMode(
+                                        SystemUiMode.manual);
+                                    SystemChrome.setSystemUIOverlayStyle(
+                                        SystemUiOverlayStyle(
+                                      statusBarColor: secondary_color,
+                                      systemNavigationBarColor: secondary_color,
+                                    ));
+                                    Navigator.of(context).pop();
+                                  },
+                                  splashColor: accent_color.withOpacity(.1),
+                                  hoverColor: accent_color.withOpacity(.1),
+                                  highlightColor: accent_color.withOpacity(.1),
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    height: 40,
+                                    width: 40,
                                   ),
-                                  Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      onTap: take_picture,
-                                      splashColor: accent_color.withOpacity(.1),
-                                      hoverColor: accent_color.withOpacity(.1),
-                                      highlightColor:
-                                          accent_color.withOpacity(.1),
-                                      borderRadius: BorderRadius.circular(40),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Text(
+                        angles_data,
+                        style: TextStyle(color: Colors.red, fontSize: 28),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            height: 250,
+                            // color: Colors.lightGreenAccent,
+                            child: Center(
+                              child: Container(
+                                height: 90,
+                                width: 90,
+                                child: Stack(
+                                  children: [
+                                    Center(
                                       child: Container(
-                                        alignment: Alignment.center,
-                                        width: double.maxFinite,
-                                        height: double.maxFinite,
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 16),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(50),
+                                            color: Colors.white,
+                                          ),
+                                          alignment: Alignment.center,
+                                          child: is_taking_picture
+                                              ? CircularProgressIndicator(
+                                                  color: accent_color
+                                                      .withOpacity(.6),
+                                                )
+                                              : Icon(Icons.camera,
+                                                  size: 70,
+                                                  color: accent_color
+                                                      .withOpacity(.6))),
+                                    ),
+                                    Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        onTap: () {
+                                          is_taking_picture = true;
+                                          setState(() {});
+                                          take_picture();
+                                        },
+                                        splashColor:
+                                            accent_color.withOpacity(.1),
+                                        hoverColor:
+                                            accent_color.withOpacity(.1),
+                                        highlightColor:
+                                            accent_color.withOpacity(.1),
+                                        borderRadius: BorderRadius.circular(40),
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          width: double.maxFinite,
+                                          height: double.maxFinite,
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 16),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    top: 10,
-                    left: 10,
-                    child: Row(
-                      children: [
-                        Stack(
-                          children: [
-                            Container(
-                                height: 40,
-                                decoration: BoxDecoration(
-                                    color: Colors.indigo.withOpacity(.1),
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: Icon(
-                                  Icons.arrow_back,
-                                  color: Colors.white,
-                                  size: 40,
-                                )),
-                            Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                onTap: () {
-                                  print('alo');
-                                  Navigator.of(context).pop();
-                                },
-                                splashColor: accent_color.withOpacity(.1),
-                                hoverColor: accent_color.withOpacity(.1),
-                                highlightColor: accent_color.withOpacity(.1),
-                                borderRadius: BorderRadius.circular(20),
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  height: 40,
-                                  width: 40,
+                                  ],
                                 ),
                               ),
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  Positioned(
-                      child: Text(
-                    angles_data,
-                    style: TextStyle(color: Colors.red, fontSize: 28),
-                  )),
                 ],
               ),
             ),
@@ -260,5 +300,71 @@ class TakePictureScreenState extends State<TakePictureScreen> {
         }
       },
     );
+  }
+}
+
+class _CameraPreview extends StatelessWidget {
+  const _CameraPreview({Key? key, required this.controller, this.child})
+      : super(key: key);
+
+  /// The controller for the camera that the preview is shown for.
+  final CameraController controller;
+
+  /// A widget to overlay on top of the camera preview
+  final Widget? child;
+
+  @override
+  Widget build(BuildContext context) {
+    return controller.value.isInitialized
+        ? ValueListenableBuilder<CameraValue>(
+            valueListenable: controller,
+            builder: (BuildContext context, Object? value, Widget? child) {
+              return Stack(
+                fit: StackFit.expand,
+                children: <Widget>[
+                  _wrapInRotatedBox(child: controller.buildPreview()),
+                  child ?? Container(),
+                ],
+              );
+            },
+            child: child,
+          )
+        : Container();
+  }
+
+  Widget _wrapInRotatedBox({required Widget child}) {
+    if (kIsWeb || defaultTargetPlatform != TargetPlatform.android) {
+      return child;
+    }
+
+    return RotatedBox(
+      quarterTurns: _getQuarterTurns(),
+      child: child,
+    );
+  }
+
+  bool _isLandscape() {
+    return <DeviceOrientation>[
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight
+    ].contains(_getApplicableOrientation());
+  }
+
+  int _getQuarterTurns() {
+    final Map<DeviceOrientation, int> turns = <DeviceOrientation, int>{
+      DeviceOrientation.portraitUp: 0,
+      DeviceOrientation.landscapeRight: 1,
+      DeviceOrientation.portraitDown: 2,
+      DeviceOrientation.landscapeLeft: 3,
+    };
+    return turns[_getApplicableOrientation()]!;
+  }
+
+  DeviceOrientation _getApplicableOrientation() {
+    return controller.value.isRecordingVideo
+        ? controller.value.recordingOrientation!
+        : (controller.value.previewPauseOrientation ??
+            controller.value.lockedCaptureOrientation ??
+            controller.value.deviceOrientation);
   }
 }
