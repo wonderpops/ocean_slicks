@@ -334,6 +334,8 @@ class _MetadataWidget extends StatelessWidget {
   final TextEditingController y_angle_ctrl = TextEditingController();
   final TextEditingController z_angle_ctrl = TextEditingController();
 
+  final TextEditingController azimuth_ctrl = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     AddPostController ap_ctrl = Get.find();
@@ -352,6 +354,7 @@ class _MetadataWidget extends StatelessWidget {
       latitude_ctrl.text = selected_image['latitude'].toString();
       longitude_ctrl.text = selected_image['longitude'].toString();
       altitude_ctrl.text = selected_image['altitude'].toString();
+      azimuth_ctrl.text = selected_image['azimuth'].toString();
     }
 
     return Container(
@@ -557,7 +560,8 @@ class _MetadataWidget extends StatelessWidget {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(30)),
                       child: TextField(
-                        keyboardType: TextInputType.text,
+                        controller: azimuth_ctrl,
+                        keyboardType: TextInputType.number,
                         style: TextStyle(color: dark_color.withOpacity(.8)),
                         decoration: InputDecoration(
                           fillColor: Colors.white,

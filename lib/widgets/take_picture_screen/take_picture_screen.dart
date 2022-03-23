@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_compass/flutter_compass.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:ocean_slicks/controllers/CamerasController.dart';
@@ -42,6 +43,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   double xInclination = 0;
   double yInclination = 0;
   double zInclination = 0;
+  double azimuth = 0;
   String angles_data = '';
   bool is_taking_picture = false;
 
@@ -93,10 +95,14 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     yInclination = (yInclination * 100).round() / 100;
     zInclination = (zInclination * 100).round() / 100;
 
+    final CompassEvent tmp = await FlutterCompass.events!.first;
+    azimuth = tmp.heading!;
+
     String xAngle = "$xInclination°";
     String yAngle = "$yInclination°";
     String zAngle = "$zInclination°";
-    angles_data = "$xAngle $yAngle $zAngle";
+    String sAzimuth = "$azimuth°";
+    angles_data = "$xAngle $yAngle $zAngle $sAzimuth";
     setState(() {});
   }
 
@@ -134,7 +140,9 @@ class TakePictureScreenState extends State<TakePictureScreen> {
           desiredAccuracy: LocationAccuracy.best);
       ap_ctrl.photos.last['latitude'] = position.latitude;
       ap_ctrl.photos.last['longitude'] = position.longitude;
-      ap_ctrl.photos.last['altitude'] = position.altitude;
+      ap_ctrl.photos.last['altitude'] = (position.altitude * 100).round() / 100;
+
+      ap_ctrl.photos.last['azimuth'] = (azimuth * 100).round() / 100;
 
       Wakelock.disable();
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual);
@@ -319,12 +327,17 @@ class _CameraPreview extends StatelessWidget {
         ? ValueListenableBuilder<CameraValue>(
             valueListenable: controller,
             builder: (BuildContext context, Object? value, Widget? child) {
-              return Stack(
-                fit: StackFit.expand,
-                children: <Widget>[
-                  _wrapInRotatedBox(child: controller.buildPreview()),
-                  child ?? Container(),
-                ],
+              return AspectRatio(
+                aspectRatio: _isLandscape()
+                    ? controller.value.aspectRatio
+                    : (1 / controller.value.aspectRatio),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: <Widget>[
+                    _wrapInRotatedBox(child: controller.buildPreview()),
+                    child ?? Container(),
+                  ],
+                ),
               );
             },
             child: child,
