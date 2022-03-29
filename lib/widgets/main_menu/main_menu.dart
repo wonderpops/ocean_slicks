@@ -6,6 +6,7 @@ import 'package:ocean_slicks/widgets/add_post_screen/add_post_screen.dart';
 import 'package:ocean_slicks/widgets/home_screen/home_screen.dart';
 import 'package:ocean_slicks/widgets/map_screen/map_screen.dart';
 import 'package:ocean_slicks/widgets/messages_screen/messages_screen.dart';
+import 'package:ocean_slicks/widgets/profile_screen/profile_screen.dart';
 // import 'package:ocean_slicks/widgets/take_picture_screen/take_picture_screen.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:flutter/services.dart';
@@ -32,7 +33,7 @@ Widget getBodyByIndex(index) {
     case 3:
       return MessagesScreenWidget();
     case 4:
-      return Container();
+      return ProfileScreenWidget();
     default:
       return HomeScreenWidget();
   }
