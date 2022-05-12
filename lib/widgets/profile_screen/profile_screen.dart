@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ocean_slicks/constants/colors.dart';
+import 'package:ocean_slicks/widgets/post_screen/post_screen.dart';
 
 class ProfileScreenWidget extends StatefulWidget {
   const ProfileScreenWidget({Key? key}) : super(key: key);
@@ -185,8 +186,7 @@ class _UserPostsWidget extends StatelessWidget {
               axisDirection: AxisDirection.down,
               color: accent_color,
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
                 child: ListView(
                   children: posts,
                 ),
@@ -272,7 +272,15 @@ class _PostWidget extends StatelessWidget {
               child: Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: () => print('lol'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (BuildContext context) =>
+                        PostScreenWidget(post_id: 0),
+                  ),
+                );
+                print('lol');
+              },
               splashColor: accent_color.withOpacity(.1),
               hoverColor: accent_color.withOpacity(.1),
               focusColor: accent_color.withOpacity(.1),
