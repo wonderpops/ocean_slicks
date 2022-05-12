@@ -1,7 +1,5 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:http/http.dart' as http;
@@ -11,7 +9,7 @@ class AuthController extends GetxController {
   bool isAuthInProcess = false;
   bool isSignUpInProcess = false;
 
-  final storage = new FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
 
   AndroidOptions _getAndroidOptions() => const AndroidOptions(
         encryptedSharedPreferences: true,
@@ -71,9 +69,9 @@ class AuthController extends GetxController {
     bool isRefreshed = false;
     int _expires_at = await expires_at;
     var epochTime = now.millisecondsSinceEpoch / 1000;
-    if (access_token != '') {
+    if (await access_token != '') {
       print('_expires_at: $_expires_at, epochTime: $epochTime');
-      if (await _expires_at < epochTime - 10) {
+      if (_expires_at < epochTime - 10) {
         print('refreshing tokens...');
         isRefreshed = await _refresh_tokens(await refresh_token);
         print('auth cheked');
@@ -86,13 +84,6 @@ class AuthController extends GetxController {
       print('auth error');
       return false;
     }
-  }
-
-  Future<bool> auth(String username, String password) async {
-    await Future.delayed(const Duration(seconds: 10));
-    print(username);
-    print(password);
-    return true;
   }
 
   Future<Map<String, dynamic>> signIn({
