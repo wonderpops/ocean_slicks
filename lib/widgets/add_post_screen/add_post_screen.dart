@@ -725,6 +725,8 @@ class _AddPostButton extends StatelessWidget {
             child: InkWell(
               onTap: () {
                 // TODO send post here
+                AddPostController ap_ctrl = Get.find();
+                print(ap_ctrl.photos.toString());
               },
               splashColor: accent_color.withOpacity(.1),
               hoverColor: accent_color.withOpacity(.1),

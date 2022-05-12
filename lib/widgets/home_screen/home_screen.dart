@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ocean_slicks/widgets/take_picture_screen/take_picture_screen.dart';
 
 import '../../constants/colors.dart';
+import '../post_screen/post_screen.dart';
 
 class HomeScreenWidget extends StatelessWidget {
   const HomeScreenWidget({Key? key}) : super(key: key);
@@ -524,70 +525,94 @@ class _PostWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        decoration: BoxDecoration(
-            color: secondary_color, borderRadius: BorderRadius.circular(20)),
-        width: double.maxFinite,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    backgroundColor: dark_color,
-                    radius: 26,
-                    child: Icon(
-                      Icons.person,
-                      color: light_color,
-                    ),
-                  ),
-                  SizedBox(width: 18),
-                  Text(
-                    'username',
-                    style: TextStyle(
-                        color: dark_color.withOpacity(.8), fontSize: 18),
-                  ),
-                ],
-              ),
-            ),
-            Container(height: 300, child: Placeholder()),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Title',
-                      style: TextStyle(
-                          color: dark_color.withOpacity(.8), fontSize: 24),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: accent_color.withOpacity(.1)),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        child: Text(
-                          '18-02-1998',
-                          style: TextStyle(
-                              color: accent_color.withOpacity(.6),
-                              fontSize: 16),
+      padding: const EdgeInsets.all(8),
+      child: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+                color: secondary_color,
+                borderRadius: BorderRadius.circular(20)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: dark_color,
+                        radius: 26,
+                        child: Icon(
+                          Icons.person,
+                          color: light_color,
                         ),
                       ),
-                    ),
+                      SizedBox(width: 18),
+                      Text(
+                        'username',
+                        style: TextStyle(
+                            color: dark_color.withOpacity(.8), fontSize: 18),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                Container(height: 300, child: Placeholder()),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Title',
+                          style: TextStyle(
+                              color: dark_color.withOpacity(.8), fontSize: 24),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: accent_color.withOpacity(.1)),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            child: Text(
+                              '18-02-1998',
+                              style: TextStyle(
+                                  color: accent_color.withOpacity(.6),
+                                  fontSize: 16),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          Positioned.fill(
+              child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (BuildContext context) =>
+                        PostScreenWidget(post_id: 0),
+                  ),
+                );
+                print('lol');
+              },
+              splashColor: accent_color.withOpacity(.1),
+              hoverColor: accent_color.withOpacity(.1),
+              focusColor: accent_color.withOpacity(.1),
+              highlightColor: accent_color.withOpacity(.1),
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ))
+        ],
       ),
     );
   }

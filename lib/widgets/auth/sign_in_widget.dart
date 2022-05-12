@@ -2,171 +2,189 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ocean_slicks/constants/colors.dart';
 import 'package:ocean_slicks/controllers/auth_controller.dart';
+import 'package:ocean_slicks/widgets/auth/sign_up_widget.dart';
 import 'package:ocean_slicks/widgets/main_menu/main_menu.dart';
 
 class SignInWidget extends StatelessWidget {
-  SignInWidget(
-      {Key? key,
-      required this.username_ctrl,
-      required this.password_ctrl,
-      required this.onSignInClick,
-      required this.onSignUpClick})
-      : super(key: key);
-  final Future<bool> Function(String, String) onSignInClick;
-  final Function() onSignUpClick;
+  SignInWidget({
+    Key? key,
+  }) : super(key: key);
 
-  TextEditingController username_ctrl;
-  TextEditingController password_ctrl;
+  TextEditingController username_ctrl = TextEditingController();
+  TextEditingController password_ctrl = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     AuthController auth_ctrl = Get.find();
-    return Container(
-      constraints: const BoxConstraints(maxWidth: 400),
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            decoration: BoxDecoration(
-                color: dark_color.withOpacity(.1),
-                borderRadius: BorderRadius.circular(30)),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Sign In',
-                    style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color: dark_color.withOpacity(.8)),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 8),
-                    child: Icon(
-                      Icons.login_outlined,
-                      color: dark_color.withOpacity(.8),
-                      size: 30,
+    return Scaffold(
+      backgroundColor: gray_color,
+      body: Container(
+        constraints: const BoxConstraints(maxWidth: 400),
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(
+              height: 10,
+            ),
+            Container(
+              decoration: BoxDecoration(
+                  color: dark_color.withOpacity(.1),
+                  borderRadius: BorderRadius.circular(30)),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Sign In',
+                      style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: dark_color.withOpacity(.8)),
                     ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
-            child: Text(
-              'Welcome back to ocean slicks!',
-              style: TextStyle(color: dark_color),
-            ),
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          AutofillGroup(
-              child: Column(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20)),
-                child: TextField(
-                  readOnly: auth_ctrl.isAuthInProcess,
-                  autofillHints: const [
-                    AutofillHints.username,
-                    AutofillHints.email
+                    Padding(
+                      padding: EdgeInsets.only(left: 8),
+                      child: Icon(
+                        Icons.login_outlined,
+                        color: dark_color.withOpacity(.8),
+                        size: 30,
+                      ),
+                    ),
                   ],
-                  keyboardType: TextInputType.text,
-                  controller: username_ctrl,
-                  style: const TextStyle(color: dark_color),
-                  decoration: InputDecoration(
-                    fillColor: Colors.white,
-                    focusColor: Colors.white,
-                    labelStyle: TextStyle(color: Colors.black.withOpacity(.6)),
-                    hintStyle: TextStyle(color: dark_color.withOpacity(.4)),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                        borderSide: const BorderSide(color: dark_color)),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      borderSide: const BorderSide(color: dark_color),
-                    ),
-                    labelText: 'username',
-                    hintText: 'my_username',
-                  ),
                 ),
               ),
-              const SizedBox(
-                height: 16,
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
+              child: Text(
+                'Welcome back to ocean slicks!',
+                style: TextStyle(color: dark_color),
               ),
-              Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20)),
-                child: TextField(
-                  readOnly: auth_ctrl.isAuthInProcess,
-                  autofillHints: const [AutofillHints.password],
-                  keyboardType: TextInputType.text,
-                  controller: password_ctrl,
-                  obscureText: true,
-                  style: const TextStyle(color: dark_color),
-                  decoration: InputDecoration(
-                    labelStyle: TextStyle(color: Colors.black.withOpacity(.6)),
-                    hintStyle: TextStyle(color: dark_color.withOpacity(.4)),
-                    fillColor: Colors.white,
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                        borderSide: const BorderSide(color: dark_color)),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      borderSide: const BorderSide(color: dark_color),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            AutofillGroup(
+                child: Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(30)),
+                  child: TextField(
+                    readOnly: auth_ctrl.isAuthInProcess,
+                    autofillHints: const [
+                      AutofillHints.username,
+                      AutofillHints.email
+                    ],
+                    keyboardType: TextInputType.text,
+                    controller: username_ctrl,
+                    style: const TextStyle(color: dark_color),
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      labelStyle: TextStyle(color: dark_color.withOpacity(.4)),
+                      hintStyle: TextStyle(color: dark_color.withOpacity(.2)),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide:
+                              BorderSide(color: Colors.white.withOpacity(.4))),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                        borderSide:
+                            BorderSide(color: dark_color.withOpacity(.4)),
+                      ),
+                      labelText: 'username',
+                      hintText: 'my_username',
                     ),
-                    counterStyle: const TextStyle(color: dark_color),
-                    labelText: 'Password',
-                    hintText: 'my_pass_1234',
-                    focusColor: dark_color,
                   ),
                 ),
-              )
-            ],
-          )),
-          const SizedBox(
-            height: 16,
-          ),
-          // const _errorMessageWidget(),
-          _AuthButtonWidget(
-            onSignInClick: onSignInClick,
-            username: username_ctrl.text,
-            password: password_ctrl.text,
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          _SignUpButtonWidget(
-            onSignUpClick: onSignUpClick,
-          ),
-        ],
+                const SizedBox(
+                  height: 16,
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(30)),
+                  child: TextField(
+                    onChanged: (text) {
+                      print('First text field: $text');
+                    },
+                    readOnly: auth_ctrl.isAuthInProcess,
+                    autofillHints: const [AutofillHints.password],
+                    keyboardType: TextInputType.text,
+                    controller: password_ctrl,
+                    obscureText: true,
+                    style: const TextStyle(color: dark_color),
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      labelStyle: TextStyle(color: dark_color.withOpacity(.4)),
+                      hintStyle: TextStyle(color: dark_color.withOpacity(.2)),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide:
+                              BorderSide(color: Colors.white.withOpacity(.4))),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                        borderSide:
+                            BorderSide(color: dark_color.withOpacity(.4)),
+                      ),
+                      counterStyle: const TextStyle(color: dark_color),
+                      labelText: 'Password',
+                      hintText: 'my_pass_1234',
+                      focusColor: dark_color,
+                    ),
+                  ),
+                )
+              ],
+            )),
+            const SizedBox(
+              height: 16,
+            ),
+            // const _errorMessageWidget(),
+            _AuthButtonWidget(
+              username: username_ctrl,
+              password: password_ctrl,
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            _SignUpButtonWidget(),
+          ],
+        ),
       ),
     );
   }
 }
 
-class _AuthButtonWidget extends StatelessWidget {
-  _AuthButtonWidget(
-      {Key? key,
-      required this.onSignInClick,
-      required this.username,
-      required this.password})
+class _AuthButtonWidget extends StatefulWidget {
+  _AuthButtonWidget({Key? key, required this.username, required this.password})
       : super(key: key);
-  final Future<bool> Function(String, String) onSignInClick;
-  String username;
-  String password;
+  TextEditingController username;
+  TextEditingController password;
+
+  @override
+  State<_AuthButtonWidget> createState() => _AuthButtonWidgetState();
+}
+
+class _AuthButtonWidgetState extends State<_AuthButtonWidget> {
+  Future<bool> onSignInClick(String username, String password) async {
+    AuthController auth_ctrl = Get.find();
+    //* Auth logic here
+    auth_ctrl.isAuthInProcess = true;
+    setState(() {});
+
+    Map response =
+        await auth_ctrl.signIn(username: username, password: password);
+
+    bool isAuth = response.containsKey('error') ? false : true;
+
+    auth_ctrl.isAuthInProcess = false;
+    setState(() {});
+    print(await auth_ctrl.access_token);
+    return isAuth;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -178,7 +196,7 @@ class _AuthButtonWidget extends StatelessWidget {
         children: [
           Container(
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(30),
                   color: dark_color,
                   boxShadow: [
                     BoxShadow(
@@ -205,7 +223,10 @@ class _AuthButtonWidget extends StatelessWidget {
               visible: !auth_ctrl.isAuthInProcess,
               child: InkWell(
                 onTap: () async {
-                  bool auth = await onSignInClick(username, password);
+                  print(widget.username.text);
+                  print(widget.password.text);
+                  bool auth = await onSignInClick(
+                      widget.username.text, widget.password.text);
                   print(auth);
                   if (auth) {
                     Navigator.of(context).pushReplacement(
@@ -214,6 +235,10 @@ class _AuthButtonWidget extends StatelessWidget {
                             const MainMenuWidget(),
                       ),
                     );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("SignIn error"),
+                    ));
                   }
                 },
                 focusColor: dark_color.withOpacity(.1),
@@ -235,26 +260,10 @@ class _AuthButtonWidget extends StatelessWidget {
   }
 }
 
-class _errorMessageWidget extends StatelessWidget {
-  const _errorMessageWidget({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    // if (errorMessage == null) return const SizedBox.shrink();
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      // child: Text(
-      //   errorMessage.toString(),
-      //   style: const TextStyle(color: Colors.redAccent),
-      // ),
-    );
-  }
-}
-
 class _SignUpButtonWidget extends StatelessWidget {
-  _SignUpButtonWidget({Key? key, required this.onSignUpClick})
-      : super(key: key);
-  final Function() onSignUpClick;
+  _SignUpButtonWidget({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -266,7 +275,7 @@ class _SignUpButtonWidget extends StatelessWidget {
         children: [
           Container(
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(30),
                   color: Colors.white,
                   boxShadow: [
                     BoxShadow(
@@ -288,7 +297,11 @@ class _SignUpButtonWidget extends StatelessWidget {
               visible: !auth_ctrl.isAuthInProcess,
               child: InkWell(
                 onTap: () {
-                  onSignUpClick();
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) => SignUpWidget(),
+                    ),
+                  );
                 },
                 focusColor: dark_color.withOpacity(.2),
                 splashColor: dark_color.withOpacity(.4),
