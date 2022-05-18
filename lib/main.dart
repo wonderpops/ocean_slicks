@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:ocean_slicks/constants/colors.dart';
+import 'package:ocean_slicks/controllers/api_controller.dart';
 import 'package:ocean_slicks/widgets/auth/sign_in_widget.dart';
 import 'package:ocean_slicks/widgets/main_menu/main_menu.dart';
 
@@ -22,6 +23,8 @@ Future<void> main() async {
   Get.put(auth_ctrl);
   AddPostController ap_ctrl = AddPostController();
   Get.put(ap_ctrl);
+  ApiController api_ctrl = ApiController();
+  Get.put(api_ctrl);
   // Ensure that plugin services are initialized so that `availableCameras()`
   // can be called before `runApp()`
   WidgetsFlutterBinding.ensureInitialized();

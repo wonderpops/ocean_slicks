@@ -8,6 +8,7 @@ import 'dart:convert' as convert;
 class AuthController extends GetxController {
   bool isAuthInProcess = false;
   bool isSignUpInProcess = false;
+  bool isAuthCheckInProcess = false;
 
   final storage = const FlutterSecureStorage();
 
@@ -16,7 +17,9 @@ class AuthController extends GetxController {
       );
 
   Future<String> get access_token async {
-    print('lol');
+    if (!isAuthCheckInProcess) {
+      await check_auth();
+    }
     return await storage.read(
             key: 'access_token', aOptions: _getAndroidOptions()) ??
         '';
@@ -68,6 +71,7 @@ class AuthController extends GetxController {
     DateTime now = DateTime.now();
     bool isRefreshed = false;
     int _expires_at = await expires_at;
+    isAuthCheckInProcess = true;
     var epochTime = now.millisecondsSinceEpoch / 1000;
     if (await access_token != '') {
       print('_expires_at: $_expires_at, epochTime: $epochTime');
@@ -75,13 +79,16 @@ class AuthController extends GetxController {
         print('refreshing tokens...');
         isRefreshed = await _refresh_tokens(await refresh_token);
         print('auth cheked');
+        isAuthCheckInProcess = false;
         return isRefreshed;
       } else {
         print('auth cheked');
+        isAuthCheckInProcess = false;
         return true;
       }
     } else {
       print('auth error');
+      isAuthCheckInProcess = false;
       return false;
     }
   }

@@ -1,9 +1,12 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ocean_slicks/constants/colors.dart';
 import 'package:ocean_slicks/controllers/add_post_controller.dart';
+import 'package:ocean_slicks/controllers/api_controller.dart';
 import 'package:path/path.dart';
 import 'package:universe/universe.dart';
 import 'package:geolocator/geolocator.dart';
@@ -723,11 +726,7 @@ class _AddPostButton extends StatelessWidget {
           Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: () {
-                // TODO send post here
-                AddPostController ap_ctrl = Get.find();
-                print(ap_ctrl.photos.toString());
-              },
+              onTap: add_post_on_tap,
               splashColor: accent_color.withOpacity(.1),
               hoverColor: accent_color.withOpacity(.1),
               highlightColor: accent_color.withOpacity(.1),
@@ -742,4 +741,27 @@ class _AddPostButton extends StatelessWidget {
       ),
     );
   }
+}
+
+add_post_on_tap() async {
+  ApiController api_ctrl = Get.find();
+  AddPostController ap_ctrl = Get.find();
+
+  String title = 'Test';
+  String descryption = 'TestTestTest';
+  // List uploaded_images = [];
+
+  print(ap_ctrl.photos.toString());
+
+  for (var ph in ap_ctrl.photos) {
+    ph['server_path'] = await api_ctrl.upload_image(ph['filePath']);
+    print(ph['server_path']);
+    // var uploaded_image = await api_ctrl.upload_image_data(ph);
+    // print(uploaded_image);
+    // uploaded_images.add(uploaded_image);
+  }
+
+  // print(uploaded_images);
+
+  print(await api_ctrl.add_post(title, descryption, ap_ctrl.photos));
 }
