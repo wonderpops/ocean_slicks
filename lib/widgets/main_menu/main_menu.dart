@@ -7,6 +7,7 @@ import 'package:ocean_slicks/widgets/home_screen/home_screen.dart';
 import 'package:ocean_slicks/widgets/map_screen/map_screen.dart';
 import 'package:ocean_slicks/widgets/messages_screen/messages_screen.dart';
 import 'package:ocean_slicks/widgets/profile_screen/profile_screen.dart';
+import 'package:ocean_slicks/widgets/search_screen/search_screen.dart';
 // import 'package:ocean_slicks/widgets/take_picture_screen/take_picture_screen.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:flutter/services.dart';
@@ -31,7 +32,7 @@ Widget getBodyByIndex(index) {
     case 2:
       return AddPostWidget();
     case 3:
-      return MessagesScreenWidget();
+      return SearchScreenWidget();
     case 4:
       return ProfileScreenWidget();
     default:
@@ -80,6 +81,7 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
     }
 
     return Scaffold(
+        backgroundColor: gray_color,
         resizeToAvoidBottomInset: true,
         bottomNavigationBar: Container(
           color: light_color,
@@ -113,8 +115,8 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
                 selectedColor: accent_color.withOpacity(.4),
               ),
               SalomonBottomBarItem(
-                icon: const Icon(Icons.message_outlined),
-                title: const Text("Messages"),
+                icon: const Icon(Icons.search_outlined),
+                title: const Text("Search"),
                 selectedColor: accent_color.withOpacity(.4),
               ),
               SalomonBottomBarItem(
