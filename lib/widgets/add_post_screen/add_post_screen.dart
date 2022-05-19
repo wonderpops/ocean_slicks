@@ -52,9 +52,9 @@ class _AddPostWidgetState extends State<AddPostWidget> {
               SliverList(
                   delegate: SliverChildListDelegate([
                 _AddPhotoButton(update_widget: update_data),
-                _MetadataWidget(),
+                _ImageDataWidget(),
                 _PostData(),
-                _AddPostButton()
+                _AddPostButton(update_data: update_data)
               ])),
             ],
           ),
@@ -327,8 +327,8 @@ class _AddPhotoButton extends StatelessWidget {
   }
 }
 
-class _MetadataWidget extends StatelessWidget {
-  _MetadataWidget({Key? key}) : super(key: key);
+class _ImageDataWidget extends StatelessWidget {
+  _ImageDataWidget({Key? key}) : super(key: key);
   final TextEditingController latitude_ctrl = TextEditingController();
   final TextEditingController longitude_ctrl = TextEditingController();
   final TextEditingController altitude_ctrl = TextEditingController();
@@ -366,7 +366,7 @@ class _MetadataWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Metadata',
+            Text('Image data',
                 style: TextStyle(
                     fontSize: 32,
                     color: dark_color.withOpacity(.8),
@@ -636,6 +636,7 @@ class _PostData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AddPostController ap_ctrl = Get.find();
     return Container(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -652,6 +653,7 @@ class _PostData extends StatelessWidget {
               decoration: BoxDecoration(
                   color: Colors.white, borderRadius: BorderRadius.circular(30)),
               child: TextField(
+                controller: ap_ctrl.title_ctrl,
                 keyboardType: TextInputType.text,
                 style: TextStyle(color: dark_color.withOpacity(.8)),
                 decoration: InputDecoration(
@@ -676,6 +678,7 @@ class _PostData extends StatelessWidget {
               decoration: BoxDecoration(
                   color: Colors.white, borderRadius: BorderRadius.circular(30)),
               child: TextField(
+                controller: ap_ctrl.descryption_ctrl,
                 keyboardType: TextInputType.text,
                 style: TextStyle(color: dark_color.withOpacity(.8)),
                 decoration: InputDecoration(
@@ -702,11 +705,55 @@ class _PostData extends StatelessWidget {
   }
 }
 
-class _AddPostButton extends StatelessWidget {
-  const _AddPostButton({Key? key}) : super(key: key);
+class _AddPostButton extends StatefulWidget {
+  _AddPostButton({Key? key, this.update_data}) : super(key: key);
+  final update_data;
+
+  @override
+  State<_AddPostButton> createState() => _AddPostButtonState();
+}
+
+class _AddPostButtonState extends State<_AddPostButton> {
+  add_post_on_tap(context) async {
+    ApiController api_ctrl = Get.find();
+    AddPostController ap_ctrl = Get.find();
+
+    ap_ctrl.isPostUploadingInProgress = true;
+    setState(() {});
+
+    String title = ap_ctrl.title_ctrl.text;
+    String descryption = ap_ctrl.descryption_ctrl.text;
+
+    List uploaded_images = [];
+
+    print(ap_ctrl.photos.toString());
+
+    for (var ph in ap_ctrl.photos) {
+      ph['server_path'] = await api_ctrl.upload_image(ph['filePath']);
+      print(ph['server_path']);
+    }
+
+    final result = await api_ctrl.add_post(title, descryption, ap_ctrl.photos);
+    if (result.containsKey('error')) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        backgroundColor: red_color,
+        content: Text("Uploading error, please try again later :c"),
+      ));
+    } else {
+      ap_ctrl.clear_data();
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Post uploaded!"),
+      ));
+      widget.update_data();
+    }
+    ap_ctrl.isPostUploadingInProgress = false;
+
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
+    AddPostController ap_ctrl = Get.find();
     return Padding(
       padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
       child: Stack(
@@ -717,16 +764,20 @@ class _AddPostButton extends StatelessWidget {
                 borderRadius: BorderRadius.circular(30)),
             height: 60,
             child: Center(
-              child: Text(
-                'Add post',
-                style: TextStyle(color: accent_color, fontSize: 20),
-              ),
+              child: ap_ctrl.isPostUploadingInProgress
+                  ? CircularProgressIndicator(color: accent_color)
+                  : Text(
+                      'Add post',
+                      style: TextStyle(color: accent_color, fontSize: 20),
+                    ),
             ),
           ),
           Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: add_post_on_tap,
+              onTap: () async {
+                await add_post_on_tap(context);
+              },
               splashColor: accent_color.withOpacity(.1),
               hoverColor: accent_color.withOpacity(.1),
               highlightColor: accent_color.withOpacity(.1),
@@ -741,27 +792,4 @@ class _AddPostButton extends StatelessWidget {
       ),
     );
   }
-}
-
-add_post_on_tap() async {
-  ApiController api_ctrl = Get.find();
-  AddPostController ap_ctrl = Get.find();
-
-  String title = 'Test';
-  String descryption = 'TestTestTest';
-  // List uploaded_images = [];
-
-  print(ap_ctrl.photos.toString());
-
-  for (var ph in ap_ctrl.photos) {
-    ph['server_path'] = await api_ctrl.upload_image(ph['filePath']);
-    print(ph['server_path']);
-    // var uploaded_image = await api_ctrl.upload_image_data(ph);
-    // print(uploaded_image);
-    // uploaded_images.add(uploaded_image);
-  }
-
-  // print(uploaded_images);
-
-  print(await api_ctrl.add_post(title, descryption, ap_ctrl.photos));
 }
