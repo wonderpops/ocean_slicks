@@ -89,7 +89,9 @@ class _MainMenuWidgetState extends State<MainMenuWidget> {
             currentIndex: _current_index,
             onTap: (i) => setState(() {
               if ((_current_index == 2) && (i != 2)) {
-                if (ap_ctrl.photos.isNotEmpty) {
+                if (ap_ctrl.photos.isNotEmpty ||
+                    ap_ctrl.title_ctrl.text != '' ||
+                    ap_ctrl.descryption_ctrl.text != '') {
                   _showMaterialDialog(i);
                 } else {
                   _current_index = i;
