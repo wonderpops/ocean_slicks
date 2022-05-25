@@ -56,24 +56,28 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget>
                 ),
               ),
               SliverToBoxAdapter(
-                child: TabBar(
-                  labelColor: accent_color,
-                  indicatorColor: secondary_color,
-                  unselectedLabelColor: dark_color.withOpacity(.6),
-                  controller: _tabController,
-                  tabs: [
-                    Tab(
-                      text: 'Public',
-                    ),
-                    Tab(
-                      text: 'Private',
-                    ),
-                  ],
+                child: Container(
+                  color: light_color,
+                  child: TabBar(
+                    labelColor: accent_color,
+                    indicatorColor: secondary_color,
+                    unselectedLabelColor: dark_color.withOpacity(.6),
+                    controller: _tabController,
+                    tabs: [
+                      Tab(
+                        text: 'Public',
+                      ),
+                      Tab(
+                        text: 'Private',
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ];
           },
           body: Container(
+            color: light_color,
             child: TabBarView(
               children: [
                 _UserPostsWidget(
@@ -95,37 +99,39 @@ class _HeadNavigationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Stack(
-            children: [
-              Icon(
-                Icons.settings_outlined,
-                color: dark_color.withOpacity(.6),
-                size: 40,
-              ),
-              Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () => print('lol'),
-                  splashColor: accent_color.withOpacity(.1),
-                  hoverColor: accent_color.withOpacity(.1),
-                  focusColor: accent_color.withOpacity(.1),
-                  highlightColor: accent_color.withOpacity(.1),
-                  borderRadius: BorderRadius.circular(20),
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                  ),
+    return Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Stack(
+              children: [
+                Icon(
+                  Icons.settings_outlined,
+                  color: dark_color.withOpacity(.6),
+                  size: 40,
                 ),
-              )
-            ],
-          ),
-        )
-      ],
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => print('lol'),
+                    splashColor: accent_color.withOpacity(.1),
+                    hoverColor: accent_color.withOpacity(.1),
+                    focusColor: accent_color.withOpacity(.1),
+                    highlightColor: accent_color.withOpacity(.1),
+                    borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }
