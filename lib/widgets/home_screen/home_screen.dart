@@ -34,7 +34,7 @@ class HomeScreenWidget extends StatelessWidget {
                           color: dark_color.withOpacity(.8),
                           fontWeight: FontWeight.bold)),
                   SizedBox(height: 16),
-                  _SearchWidget(),
+                  _SortingButtons(),
                   SizedBox(height: 16),
                   _DiscoverWidget()
                 ],
@@ -412,84 +412,51 @@ class _ActionButtons extends StatelessWidget {
   }
 }
 
-class _SearchWidget extends StatelessWidget {
-  const _SearchWidget({Key? key}) : super(key: key);
+class _SortingButtons extends StatelessWidget {
+  const _SortingButtons({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Flexible(
-            flex: 4,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(30)),
-              child: TextField(
-                keyboardType: TextInputType.text,
-                style: TextStyle(color: dark_color.withOpacity(.8)),
-                decoration: InputDecoration(
-                  fillColor: Colors.white,
-                  suffixIcon: Icon(
-                    Icons.search_rounded,
-                    color: dark_color.withOpacity(.8),
-                  ),
-                  labelStyle: TextStyle(color: dark_color.withOpacity(.4)),
-                  hintStyle: TextStyle(color: dark_color.withOpacity(.1)),
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide:
-                          BorderSide(color: Colors.white.withOpacity(.4))),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                    borderSide: BorderSide(color: dark_color.withOpacity(.4)),
-                  ),
-                  labelText: 'Search...',
-                  hintText: 'Search',
+        height: 50,
+        decoration: BoxDecoration(
+            color: light_color, borderRadius: BorderRadius.circular(30)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(
+              flex: 1,
+              child: Padding(
+                padding: const EdgeInsets.all(3),
+                child: Container(
+                  height: 47,
+                  decoration: BoxDecoration(
+                      color: accent_color.withOpacity(.2),
+                      borderRadius: BorderRadius.circular(30)),
+                  child: Center(
+                      child: Text(
+                    'Newest',
+                    style: TextStyle(color: accent_color.withOpacity(.8)),
+                  )),
                 ),
               ),
             ),
-          ),
-          Flexible(
-            flex: 1,
-            child: Stack(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    color: Colors.white,
-                  ),
-                  alignment: Alignment.center,
-                  width: 55,
-                  height: 55,
-                  child: Icon(
-                    Icons.filter_alt_outlined,
-                    color: dark_color.withOpacity(.8),
-                  ),
-                ),
-                Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () {
-                      print('lol');
-                    },
-                    splashColor: Colors.white.withOpacity(.1),
-                    hoverColor: Colors.white.withOpacity(.1),
-                    borderRadius: BorderRadius.circular(30),
-                    child: Container(
-                      alignment: Alignment.center,
-                      width: 55,
-                      height: 55,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+            Flexible(
+                flex: 1,
+                child: Container(
+                  child: Center(
+                      child: Text('Popular',
+                          style: TextStyle(color: dark_color.withOpacity(.4)))),
+                )),
+            Flexible(
+                flex: 1,
+                child: Container(
+                  child: Center(
+                      child: Text('Nearest',
+                          style: TextStyle(color: dark_color.withOpacity(.4)))),
+                ))
+          ],
+        ));
   }
 }
 
