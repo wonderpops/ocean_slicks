@@ -1,11 +1,9 @@
 // ignore_for_file: non_constant_identifier_names
-
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ocean_slicks/controllers/api_controller.dart';
 import 'package:ocean_slicks/widgets/take_picture_screen/take_picture_screen.dart';
+import 'package:intl/intl.dart';
 
 import '../../constants/colors.dart';
 import '../post_screen/post_screen.dart';
@@ -512,12 +510,12 @@ class _DiscoverWidget extends StatelessWidget {
                   children: snapshot.data['posts'].map<Widget>((e) {
                     // print(e['user'] == null);
                     return _PostWidget(
-                      title: e['title'].toString(),
-                      image_name: e['images'][0]['image_path'],
-                      username: e['user'] == null
-                          ? 'username'
-                          : e['user']['username'],
-                    );
+                        title: e['title'].toString(),
+                        image_name: e['images'][0]['image_path'],
+                        username: e['user'] == null
+                            ? 'username'
+                            : e['user']['username'],
+                        date: e['created_at']);
                   }).toList(),
                 )),
               );
@@ -536,13 +534,17 @@ class _PostWidget extends StatelessWidget {
       {Key? key,
       required this.title,
       required this.image_name,
-      required this.username})
+      required this.username,
+      required this.date})
       : super(key: key);
-  String title, image_name, username;
+  String title, image_name, username, date;
 
   @override
   Widget build(BuildContext context) {
     print(image_name);
+    final parsedDate = DateTime.parse(date);
+    final DateFormat formatter = DateFormat('dd-MM-yyyy');
+    final String formatted = formatter.format(parsedDate);
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Stack(
@@ -593,7 +595,7 @@ class _PostWidget extends StatelessWidget {
                         child: Text(
                           title,
                           style: TextStyle(
-                              color: dark_color.withOpacity(.8), fontSize: 24),
+                              color: dark_color.withOpacity(.8), fontSize: 20),
                         ),
                       ),
                       Align(
@@ -605,7 +607,7 @@ class _PostWidget extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 4),
                             child: Text(
-                              '18-02-1998',
+                              formatted,
                               style: TextStyle(
                                   color: accent_color.withOpacity(.6),
                                   fontSize: 16),
