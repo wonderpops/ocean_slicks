@@ -64,7 +64,7 @@ class AuthController extends GetxController {
   // }
 
   final _client = http.Client();
-  static const _host = 'http://192.168.0.196:5002';
+  static const _host = 'http://192.168.0.198:5002';
 
   Future<bool> check_auth() async {
     print('auth cheking...');

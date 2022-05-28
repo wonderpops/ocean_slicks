@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:path/path.dart';
 import 'package:async/async.dart';
@@ -7,9 +8,12 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
+import 'auth_controller.dart';
+
 class ApiController extends GetxController {
   final _client = http.Client();
-  static const _host = 'http://192.168.0.196:5002';
+  AuthController auth_ctrl = Get.find();
+  static const _host = 'http://192.168.0.198:5002';
 
   Future<String> upload_image(String file_path) async {
     final _file = File(file_path);
@@ -33,6 +37,8 @@ class ApiController extends GetxController {
     print(response.statusCode);
 
     _server_path = await response.stream.transform(convert.utf8.decoder).first;
+
+    _server_path = _server_path.replaceAll('"', '');
 
     return _server_path;
   }
@@ -100,6 +106,8 @@ class ApiController extends GetxController {
       "descryption": descryption,
     };
 
+    String access_token = await auth_ctrl.access_token;
+
     var body = convert.jsonEncode(pst_data);
     print('body: $body');
 
@@ -109,7 +117,8 @@ class ApiController extends GetxController {
       final response = await _client.post(url,
           headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $access_token'
           },
           body: body);
       if (response.statusCode == 200) {
@@ -127,6 +136,25 @@ class ApiController extends GetxController {
   }
 
   Future<Map<String, dynamic>> get_all_posts() async {
-    return {};
+    final url = Uri.parse('$_host/get_all_posts');
+
+    try {
+      final response = await _client.get(url, headers: {
+        'Accept': 'application/json',
+      });
+      if (response.statusCode == 200) {
+        final json =
+            convert.jsonDecode(convert.utf8.decode(response.bodyBytes)) as List;
+        print(json);
+        return {'posts': json};
+      } else {
+        final json = convert.jsonDecode(response.body) as Map<String, dynamic>;
+        return {'error': json};
+      }
+    } catch (error) {
+      return {
+        'error': {'detail': 'Server connection failed'}
+      };
+    }
   }
 }

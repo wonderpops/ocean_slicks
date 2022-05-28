@@ -1,4 +1,10 @@
+// ignore_for_file: non_constant_identifier_names
+
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:ocean_slicks/controllers/api_controller.dart';
 import 'package:ocean_slicks/widgets/take_picture_screen/take_picture_screen.dart';
 
 import '../../constants/colors.dart';
@@ -463,34 +469,80 @@ class _SortingButtons extends StatelessWidget {
 class _DiscoverWidget extends StatelessWidget {
   _DiscoverWidget({Key? key}) : super(key: key);
   List<Widget> posts = [
-    _PostWidget(),
-    _PostWidget(),
-    _PostWidget(),
-    _PostWidget(),
-    _PostWidget(),
-    _PostWidget(),
-    _PostWidget(),
-    _PostWidget(),
-    _PostWidget(),
-    _PostWidget()
+    // _PostWidget(),
+    // _PostWidget(),
+    // _PostWidget(),
+    // _PostWidget(),
+    // _PostWidget(),
+    // _PostWidget(),
+    // _PostWidget(),
+    // _PostWidget(),
+    // _PostWidget(),
+    // _PostWidget()
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-          child: Column(
-        children: posts,
-      )),
-    );
+    ApiController api_ctrl = Get.find();
+    return FutureBuilder(
+        future: api_ctrl.get_all_posts(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+                Visibility(
+                  visible: snapshot.hasData,
+                  child: Text(
+                    snapshot.data.toString(),
+                    style: const TextStyle(color: Colors.black, fontSize: 24),
+                  ),
+                )
+              ],
+            );
+          } else if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError) {
+              return const Text('Error');
+            } else if (snapshot.hasData) {
+              return Center(
+                child: Container(
+                    child: Column(
+                  children: snapshot.data['posts'].map<Widget>((e) {
+                    // print(e['user'] == null);
+                    return _PostWidget(
+                      title: e['title'].toString(),
+                      image_name: e['images'][0]['image_path'],
+                      username: e['user'] == null
+                          ? 'username'
+                          : e['user']['username'],
+                    );
+                  }).toList(),
+                )),
+              );
+            } else {
+              return const Text('Empty data');
+            }
+          } else {
+            return Text('State: ${snapshot.connectionState}');
+          }
+        });
   }
 }
 
 class _PostWidget extends StatelessWidget {
-  const _PostWidget({Key? key}) : super(key: key);
+  _PostWidget(
+      {Key? key,
+      required this.title,
+      required this.image_name,
+      required this.username})
+      : super(key: key);
+  String title, image_name, username;
 
   @override
   Widget build(BuildContext context) {
+    print(image_name);
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Stack(
@@ -516,14 +568,22 @@ class _PostWidget extends StatelessWidget {
                       ),
                       SizedBox(width: 18),
                       Text(
-                        'username',
+                        username,
                         style: TextStyle(
                             color: dark_color.withOpacity(.8), fontSize: 18),
                       ),
                     ],
                   ),
                 ),
-                Container(height: 300, child: Placeholder()),
+                Container(
+                  color: red_color,
+                  height: 300,
+                  width: double.maxFinite,
+                  child: Image.network(
+                    'http://192.168.0.198:5002/get_image?file_name=$image_name',
+                    fit: BoxFit.cover,
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
@@ -531,7 +591,7 @@ class _PostWidget extends StatelessWidget {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          'Title',
+                          title,
                           style: TextStyle(
                               color: dark_color.withOpacity(.8), fontSize: 24),
                         ),
