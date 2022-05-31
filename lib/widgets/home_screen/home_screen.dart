@@ -466,18 +466,6 @@ class _SortingButtons extends StatelessWidget {
 
 class _DiscoverWidget extends StatelessWidget {
   _DiscoverWidget({Key? key}) : super(key: key);
-  List<Widget> posts = [
-    // _PostWidget(),
-    // _PostWidget(),
-    // _PostWidget(),
-    // _PostWidget(),
-    // _PostWidget(),
-    // _PostWidget(),
-    // _PostWidget(),
-    // _PostWidget(),
-    // _PostWidget(),
-    // _PostWidget()
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -510,12 +498,8 @@ class _DiscoverWidget extends StatelessWidget {
                   children: snapshot.data['posts'].map<Widget>((e) {
                     // print(e['user'] == null);
                     return _PostWidget(
-                        title: e['title'].toString(),
-                        image_name: e['images'][0]['image_path'],
-                        username: e['user'] == null
-                            ? 'username'
-                            : e['user']['username'],
-                        date: e['created_at']);
+                      post: e,
+                    );
                   }).toList(),
                 )),
               );
@@ -530,21 +514,19 @@ class _DiscoverWidget extends StatelessWidget {
 }
 
 class _PostWidget extends StatelessWidget {
-  _PostWidget(
-      {Key? key,
-      required this.title,
-      required this.image_name,
-      required this.username,
-      required this.date})
-      : super(key: key);
-  String title, image_name, username, date;
+  _PostWidget({
+    Key? key,
+    required this.post,
+  }) : super(key: key);
+
+  final Map post;
 
   @override
   Widget build(BuildContext context) {
-    print(image_name);
-    final parsedDate = DateTime.parse(date);
+    String image_path = post['images'][0]['image_path'];
+    final parsedDate = DateTime.parse(post['created_at']);
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
-    final String formatted = formatter.format(parsedDate);
+    final String form_date = formatter.format(parsedDate);
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Stack(
@@ -568,9 +550,9 @@ class _PostWidget extends StatelessWidget {
                           color: light_color,
                         ),
                       ),
-                      SizedBox(width: 18),
+                      const SizedBox(width: 18),
                       Text(
-                        username,
+                        post['user']['username'],
                         style: TextStyle(
                             color: dark_color.withOpacity(.8), fontSize: 18),
                       ),
@@ -578,11 +560,10 @@ class _PostWidget extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  color: red_color,
                   height: 300,
                   width: double.maxFinite,
                   child: Image.network(
-                    'http://192.168.0.198:5002/get_image?file_name=$image_name',
+                    'http://192.168.0.198:5002/get_image?file_name=$image_path',
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -593,7 +574,7 @@ class _PostWidget extends StatelessWidget {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          title,
+                          post['title'],
                           style: TextStyle(
                               color: dark_color.withOpacity(.8), fontSize: 20),
                         ),
@@ -607,7 +588,7 @@ class _PostWidget extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 4),
                             child: Text(
-                              formatted,
+                              form_date,
                               style: TextStyle(
                                   color: accent_color.withOpacity(.6),
                                   fontSize: 16),
@@ -629,7 +610,7 @@ class _PostWidget extends StatelessWidget {
                 Navigator.of(context).push(
                   MaterialPageRoute<void>(
                     builder: (BuildContext context) =>
-                        PostScreenWidget(post_id: 0),
+                        PostScreenWidget(post: post),
                   ),
                 );
                 print('lol');

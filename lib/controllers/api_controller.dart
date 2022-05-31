@@ -157,4 +157,27 @@ class ApiController extends GetxController {
       };
     }
   }
+
+  Future<Map<String, dynamic>> get_posts_by_id(int id) async {
+    final url = Uri.parse('$_host/get_post?id=$id');
+
+    try {
+      final response = await _client.get(url, headers: {
+        'Accept': 'application/json',
+      });
+      if (response.statusCode == 200) {
+        final json = convert.jsonDecode(convert.utf8.decode(response.bodyBytes))
+            as Map<String, dynamic>;
+        // print(json);
+        return json;
+      } else {
+        final json = convert.jsonDecode(response.body) as Map<String, dynamic>;
+        return {'error': json};
+      }
+    } catch (error) {
+      return {
+        'error': {'detail': 'Server connection failed'}
+      };
+    }
+  }
 }

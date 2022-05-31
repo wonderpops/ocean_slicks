@@ -282,7 +282,7 @@ class _PostWidget extends StatelessWidget {
                 Navigator.of(context).push(
                   MaterialPageRoute<void>(
                     builder: (BuildContext context) =>
-                        PostScreenWidget(post_id: 0),
+                        PostScreenWidget(post: {}),
                   ),
                 );
                 print('lol');

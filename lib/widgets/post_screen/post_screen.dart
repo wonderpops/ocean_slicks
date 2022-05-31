@@ -1,14 +1,19 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ocean_slicks/controllers/api_controller.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:universe/universe.dart';
+import 'package:intl/intl.dart';
 
 import '../../constants/colors.dart';
 
 class PostScreenWidget extends StatefulWidget {
-  PostScreenWidget({Key? key, required this.post_id}) : super(key: key);
-  final int post_id;
+  PostScreenWidget({Key? key, required this.post}) : super(key: key);
+  Map post;
   int selected_photo_id = 0;
 
   @override
@@ -16,49 +21,35 @@ class PostScreenWidget extends StatefulWidget {
 }
 
 class _PostScreenWidgetState extends State<PostScreenWidget> {
-  List photos = [
-    {
-      'id': 0,
-      'filePath':
-          '/data/user/0/com.example.ocean_slicks/app_flutter/Pictures/flutter_test/1649146019308.jpg',
-      'xInclination': 0.26,
-      'yInclination': 81.5,
-      'zInclination': 44.68,
-      'latitude': 43.1020794,
-      'longitude': 131.9621254,
-      'altitude': 185.1,
-      'azimuth': 138.7
-    },
-    {
-      'id': 1,
-      'filePath':
-          '/data/user/0/com.example.ocean_slicks/app_flutter/Pictures/flutter_test/1649146024116.jpg',
-      'xInclination': 1.56,
-      'yInclination': 26.36,
-      'zInclination': 23.9,
-      'latitude': 43.1020678,
-      'longitude': 131.9621578,
-      'altitude': 185.1,
-      'azimuth': 121.17
-    },
-    {
-      'id': 2,
-      'filePath':
-          '/data/user/0/com.example.ocean_slicks/app_flutter/Pictures/flutter_test/1649146028209.jpg',
-      'xInclination': -1.3,
-      'yInclination': 10.09,
-      'zInclination': 9.85,
-      'latitude': 43.1020645,
-      'longitude': 131.9621113,
-      'altitude': 185.1,
-      'azimuth': 102.23
-    }
-  ];
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
-  String title = 'Post Title';
+  ApiController api_ctrl = Get.find();
 
-  String description =
-      'Description Description Description Description Description Description Description Description Description Description Description Description Description Description';
+  void _onRefresh() async {
+    widget.post = await api_ctrl.get_posts_by_id(widget.post['id']);
+    print('refreshed');
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use refreshFailed()
+    setState(() {});
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async {
+    print('sdgdsgs');
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use loadFailed(),if no data return,use LoadNodata()
+    if (mounted) setState(() {});
+    _refreshController.loadComplete();
+  }
+
+  @override
+  void initState() {
+    widget.selected_photo_id = widget.post['images'].first['id'];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,50 +58,68 @@ class _PostScreenWidgetState extends State<PostScreenWidget> {
       setState(() {});
     }
 
+    final parsedDate = DateTime.parse(widget.post['created_at']);
+    final DateFormat formatter = DateFormat('dd-MM-yyyy');
+    final String form_date = formatter.format(parsedDate);
+
+    print(widget.post);
+
     return Scaffold(
-      backgroundColor: gray_color,
-      body: SafeArea(
-        child: ScrollConfiguration(
-          behavior: ScrollBehavior(),
+        backgroundColor: gray_color,
+        body: SafeArea(
           child: GlowingOverscrollIndicator(
             axisDirection: AxisDirection.down,
             color: accent_color,
-            child: CustomScrollView(
-              slivers: <Widget>[
-                SliverList(
-                    delegate: SliverChildListDelegate([
-                  _TopNavigationWidget(),
-                  _PlacePreview(
-                      selected_image: photos.firstWhere((element) =>
-                          element['id'] == widget.selected_photo_id)),
-                  _PhotosWidget(
-                    title: title,
-                    images: photos,
-                    selected_image_id: widget.selected_photo_id,
-                  ),
-                ])),
-                SliverVisibility(
-                    visible: true,
-                    sliver: SliverPadding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        sliver: _PhotosGrid(
-                          update_data: update_data,
-                          images: photos,
-                          selected_image_id: widget.selected_photo_id,
-                        ))),
-                SliverList(
-                    delegate: SliverChildListDelegate([
-                  _DescriptionWidget(description: description),
-                  _PostCommentsWidget(),
-                  // _PostData(),
-                  // _AddPostButton()
-                ])),
-              ],
+            child: ScrollConfiguration(
+              behavior: ScrollBehavior(),
+              child: SmartRefresher(
+                enablePullUp: false,
+                controller: _refreshController,
+                onRefresh: _onRefresh,
+                onLoading: _onLoading,
+                child: CustomScrollView(
+                  slivers: <Widget>[
+                    SliverList(
+                        delegate: SliverChildListDelegate([
+                      _TopNavigationWidget(),
+                      _PlacePreview(
+                          selected_image: widget.post['images'].firstWhere(
+                              (element) =>
+                                  element['id'] == widget.selected_photo_id)),
+                      _PhotosWidget(
+                        title: widget.post['title'],
+                        date: form_date,
+                        views: 201,
+                        likes: 2002,
+                        images: widget.post['images'],
+                        selected_image_id: widget.selected_photo_id,
+                      ),
+                    ])),
+                    SliverVisibility(
+                        visible: true,
+                        sliver: SliverPadding(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            sliver: _PhotosGrid(
+                              update_data: update_data,
+                              images: widget.post['images'],
+                              selected_image_id: widget.selected_photo_id,
+                            ))),
+                    SliverList(
+                        delegate: SliverChildListDelegate([
+                      _DescriptionWidget(
+                          description: widget.post['descryption'],
+                          avatar_path: '',
+                          username: 'wonderpop'),
+                      _PostCommentsWidget(),
+                      // _PostData(),
+                      // _AddPostButton()
+                    ])),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 }
 
@@ -212,7 +221,6 @@ class _PlacePreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double map_width = MediaQuery.of(context).size.width;
-    print(selected_image['latitude']);
     return Stack(children: [
       Container(
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
@@ -257,12 +265,15 @@ class _PhotosWidget extends StatefulWidget {
   _PhotosWidget(
       {Key? key,
       required this.title,
+      required this.date,
+      required this.views,
+      required this.likes,
       required this.images,
       required this.selected_image_id})
       : super(key: key);
-  final String title;
+  final String title, date;
   final List images;
-  final int selected_image_id;
+  final int selected_image_id, views, likes;
 
   @override
   State<_PhotosWidget> createState() => _PhotosWidgetState();
@@ -271,6 +282,8 @@ class _PhotosWidget extends StatefulWidget {
 class _PhotosWidgetState extends State<_PhotosWidget> {
   @override
   Widget build(BuildContext context) {
+    String selected_image_path = widget.images.firstWhere(
+        (element) => element['id'] == widget.selected_image_id)['image_path'];
     return Container(
       child: Padding(
         padding:
@@ -296,7 +309,7 @@ class _PhotosWidgetState extends State<_PhotosWidget> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: Text(
-                      '18-02-1998',
+                      widget.date,
                       style: TextStyle(
                           color: accent_color.withOpacity(.6), fontSize: 16),
                     ),
@@ -308,14 +321,14 @@ class _PhotosWidgetState extends State<_PhotosWidget> {
                     Icon(Icons.remove_red_eye_outlined),
                     SizedBox(width: 8),
                     Text(
-                      '200',
+                      widget.views.toString(),
                       style: TextStyle(color: dark_color, fontSize: 16),
                     )
                   ],
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
             Stack(
@@ -324,10 +337,8 @@ class _PhotosWidgetState extends State<_PhotosWidget> {
                   borderRadius: BorderRadius.circular(20),
                   child: AspectRatio(
                     aspectRatio: 4 / 3,
-                    child: Image.file(
-                      File(widget.images.firstWhere((element) =>
-                          element['id'] ==
-                          widget.selected_image_id)['filePath']),
+                    child: Image.network(
+                      'http://192.168.0.198:5002/get_image?file_name=$selected_image_path',
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -350,13 +361,13 @@ class _PhotosWidgetState extends State<_PhotosWidget> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(
+                                  const Icon(
                                     Icons.favorite_border,
                                     size: 30,
                                   ),
                                   Text(
-                                    '200',
-                                    style: TextStyle(
+                                    widget.likes.toString(),
+                                    style: const TextStyle(
                                         color: dark_color, fontSize: 16),
                                   )
                                 ],
@@ -451,6 +462,7 @@ class _PhotoPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String image_path = image['image_path'];
     return GridTile(
       child: Stack(children: [
         Positioned.fill(
@@ -464,8 +476,8 @@ class _PhotoPreview extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
-                child: Image.file(
-                  File(image['filePath']),
+                child: Image.network(
+                  'http://192.168.0.198:5002/get_image?file_name=$image_path',
                   fit: BoxFit.cover,
                 ),
               ),
@@ -492,8 +504,13 @@ class _PhotoPreview extends StatelessWidget {
 }
 
 class _DescriptionWidget extends StatelessWidget {
-  _DescriptionWidget({Key? key, required this.description}) : super(key: key);
-  final String description;
+  _DescriptionWidget(
+      {Key? key,
+      required this.description,
+      required this.avatar_path,
+      required this.username})
+      : super(key: key);
+  final String description, avatar_path, username;
 
   @override
   Widget build(BuildContext context) {
