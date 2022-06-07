@@ -180,4 +180,29 @@ class ApiController extends GetxController {
       };
     }
   }
+
+  Future<Map<String, dynamic>> get_posts_in_bounds(
+      min_lat, min_lng, max_lat, max_lng) async {
+    final url = Uri.parse(
+        '$_host/get_posts_in_bounds?min_lat=$min_lat&min_lng=$min_lng&max_lat=$max_lat&max_lng=$max_lng');
+
+    try {
+      final response = await _client.get(url, headers: {
+        'Accept': 'application/json',
+      });
+      if (response.statusCode == 200) {
+        final json =
+            convert.jsonDecode(convert.utf8.decode(response.bodyBytes)) as List;
+        // print(json);
+        return {'posts': json};
+      } else {
+        final json = convert.jsonDecode(response.body) as Map<String, dynamic>;
+        return {'error': json};
+      }
+    } catch (error) {
+      return {
+        'error': {'detail': 'Server connection failed'}
+      };
+    }
+  }
 }
